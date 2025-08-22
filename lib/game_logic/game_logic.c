@@ -21,7 +21,7 @@ void ask() {
 	if (fgets(response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
 		perror("Error getting user input.");
 		exit(1);
-	};
+	}
 	char* newlinePosition = strchr(response, '\n');
 	if (newlinePosition == NULL) {
 		while(getchar() != '\n');
