@@ -4,8 +4,7 @@
 void initialise(FILE* saveFile);
 void extractData(FILE* saveFile);
 void load();
-void saveHistory(FILE* saveFile);
-void saveGameState(FILE* saveFile);
+void saveData(FILE* saveFile);
 void save();
 
 #endif

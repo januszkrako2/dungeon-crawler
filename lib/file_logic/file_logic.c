@@ -298,12 +298,19 @@ void saveHistory(FILE* saveFile) {
 	}
 }
 
+void saveData(FILE* saveFile) {
+	char current;
+	while ((current = fgetc(saveFile)) != EOF) {
+		// TODO: logic for saving the game
+	}
+}
+
 void save() {
 	FILE* saveFile = fopen("savefile.txt", "w+");
 	if (saveFile == NULL) {
 		perror("Error saving to file.");
 		exit(1);
 	}
-	//saveHistory(saveFile);
-	//saveGameState(saveFile);
+	saveData(saveFile);
+	fclose(saveFile);
 }
