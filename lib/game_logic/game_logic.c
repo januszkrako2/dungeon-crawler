@@ -15,6 +15,7 @@ void helpText(void)
         "Type compass directions to move.\n"
         "Type 'attack' to attack.\n"
         "Type 'solve' followed by a number to solve puzzles.\n";
+    
     printf("%s", helpText);
 }
 
