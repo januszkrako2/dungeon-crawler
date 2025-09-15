@@ -31,7 +31,6 @@ void initialiseRoomFile(FILE* roomFile)
         "\tSOUTH: 100\n"
         "\tWEST: None\n"
         "CHALLENGE: Physical\n";
-    
     fputs(initialConfiguration, roomFile);
     rewind(roomFile);
 }

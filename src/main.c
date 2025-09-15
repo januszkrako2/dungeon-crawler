@@ -37,7 +37,7 @@ int main(void)
 
         for (size_t i = 0; i < MAX_RESPONSE_LENGTH; i++)
         {
-        player.name[i] = response[i];
+            player.name[i] = response[i];
         }
     }
 
