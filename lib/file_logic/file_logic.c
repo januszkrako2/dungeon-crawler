@@ -124,7 +124,7 @@ void extractRooms(FILE* roomFile)
 
                     break;
                 }
-
+                
                 case 7:
                 {
                     if (strncmp(line, "\tEAST: ", 7) == 0)
