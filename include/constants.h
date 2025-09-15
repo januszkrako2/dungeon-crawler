@@ -1,0 +1,13 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+enum
+{
+    MAX_RESPONSE_LENGTH = 13,
+    MAX_ROOMS = 64,
+    MAX_ROOM_MESSAGE_LENGTH = 80,
+    MAX_CHALLENGES_PER_ROOM = 8,
+    PLAYER_NAME_LENGTH = 30
+};
+
+#endif

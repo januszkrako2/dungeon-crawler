@@ -4,9 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "defines.h"
+#include "constants.h"
 #include "structs.h"
-#include "externs.h"
+#include "mutables.h"
+
 #include "text_utils.h"
 
 void initialiseRoomFile(FILE* roomFile)

@@ -4,9 +4,10 @@
 #include <stdint.h>
 #include <ctype.h>
 
-#include "defines.h"
+#include "constants.h"
 #include "structs.h"
-#include "externs.h"
+#include "mutables.h"
+
 #include "text_utils.h"
 
 void helpText(void)

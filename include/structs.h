@@ -1,11 +1,6 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "defines.h"
-
 typedef struct
 {
     uint8_t health;

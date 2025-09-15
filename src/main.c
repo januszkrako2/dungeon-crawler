@@ -6,16 +6,16 @@ executable, it opens a terminal window that instantly closes before
 the user can see any error message.
 
 TODO: Change integer types.
-
-TODO: Remove defines, replace with compile-time constants.
 */ 
 
 #include <stdint.h>
 #include <stdio.h>
 
-#include "defines.h"
+#include "constants.h"
 #include "structs.h"
-#include "externs.h"
+#include "mutables.h"
+
+#include "text_utils.h"
 #include "file_logic.h"
 #include "game_logic.h"
 
