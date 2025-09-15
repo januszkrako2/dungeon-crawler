@@ -5,8 +5,6 @@ This is for Windows compatibility -- when people double-click on the
 executable, it opens a terminal window that instantly closes before
 the user can see any error message.
 
-TODO: Convert to Allman style.
-
 TODO: Change integer types.
 
 TODO: Remove defines, replace with compile-time constants.
@@ -27,29 +25,29 @@ Player player = {0};
 
 int main(void)
 {
-  load();
-  helpText();
-  printf("Type 'help' at any time to get reminded of these instructions.\n");
-  printf("\n");
+    load();
+    helpText();
+    printf("Type 'help' at any time to get reminded of these instructions.\n");
+    printf("\n");
 
-  while (player.name[0] == '\0')
-  {
-	  printf("What is your name? ");
-	  ask();
-
-	  for (size_t i = 0; i < MAX_RESPONSE_LENGTH; i++)
+    while (player.name[0] == '\0')
     {
-	  	player.name[i] = response[i];
-	  }
-  }
+        printf("What is your name? ");
+        ask();
 
-  // Main game loop
-  while (1)
-  {
-    printf("What would you like to do? ");
-    ask();
-    gameLogic();
-  }
+        for (size_t i = 0; i < MAX_RESPONSE_LENGTH; i++)
+        {
+        player.name[i] = response[i];
+        }
+    }
 
-  return 0;
+    // Main game loop
+    while (1)
+    {
+        printf("What would you like to do? ");
+        ask();
+        gameLogic();
+    }
+
+    return 0;
 }
