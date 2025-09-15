@@ -6,25 +6,25 @@
 
 #include "defines.h"
 
-typedef struct PhysicalChallenge
+typedef struct
 {
     uint8_t health;
 } PhysicalChallenge;
 
-typedef struct PuzzleChallenge
+typedef struct
 {
     uint8_t firstNumber;
     uint8_t secondNumber;
 } PuzzleChallenge;
 
-typedef enum Challenge
+typedef enum
 {
     NONE,
     PHYSICAL,
     PUZZLE
 } Challenge;
 
-typedef enum Direction
+typedef enum
 {
     NORTH,
     EAST,
@@ -32,7 +32,7 @@ typedef enum Direction
     WEST
 } Direction;
 
-typedef struct Room
+typedef struct
 {
     size_t roomNumber;
     char message[MAX_ROOM_MESSAGE_LENGTH];
@@ -40,10 +40,17 @@ typedef struct Room
     Challenge challenge[MAX_CHALLENGES_PER_ROOM];
 } Room;
 
-typedef struct Player
+typedef struct
 {
     char name[PLAYER_NAME_LENGTH];
     Room currentRoom;
 } Player;
+
+typedef struct
+{
+    Player player;
+    Room rooms[MAX_ROOMS];
+    char response[MAX_RESPONSE_LENGTH];
+} GameState;
 
 #endif

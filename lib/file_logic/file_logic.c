@@ -59,7 +59,7 @@ void extractRooms(FILE* roomFile)
 
         if (roomCounter == MAX_ROOMS)
         {
-            perror("Error: too many rooms in savefile.txt");
+            perror("Error: too many game.rooms in savefile.txt");
             exit(1);
         }
 
@@ -71,7 +71,7 @@ void extractRooms(FILE* roomFile)
                 trimStart(line, 13);
                 size_t roomNumberConverted = 
                     stringToSizeT(line);
-                rooms[roomCounter].roomNumber = 
+                game.rooms[roomCounter].roomNumber = 
                     roomNumberConverted;
             }
             else
@@ -89,7 +89,7 @@ void extractRooms(FILE* roomFile)
 
                 for (size_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH; i++)
                 {
-                    rooms[roomCounter].message[i] = line[i];
+                    game.rooms[roomCounter].message[i] = line[i];
 
                     if (line[i] == '\0')
                     {
@@ -117,7 +117,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tNORTH: ", 8) == 0)
                     {
                         trimStart(line, 8);
-                        rooms[roomCounter].connections[NORTH] =
+                        game.rooms[roomCounter].connections[NORTH] =
                             stringToSizeT(line);
                     }
 
@@ -129,7 +129,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tEAST: ", 7) == 0)
                     {
                         trimStart(line, 7);
-                        rooms[roomCounter].connections[EAST] =
+                        game.rooms[roomCounter].connections[EAST] =
                             stringToSizeT(line);
                     }
                     
@@ -141,7 +141,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tSOUTH: ", 8) == 0)
                     {
                         trimStart(line, 8);
-                        rooms[roomCounter].connections[SOUTH] =
+                        game.rooms[roomCounter].connections[SOUTH] =
                             stringToSizeT(line);
                     }
 
@@ -153,7 +153,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tWEST: ", 7) == 0)
                     {
                         trimStart(line, 7);
-                        rooms[roomCounter].connections[WEST] =
+                        game.rooms[roomCounter].connections[WEST] =
                             stringToSizeT(line);
                         connectingRooms = false;
                     }
@@ -180,14 +180,14 @@ void extractRooms(FILE* roomFile)
                     else if (strncmp(line, "Physical", 8) == 0)
                     {
                         trimStart(line, 8);
-                        rooms[roomCounter].challenge[roomChallengeCounter] =
+                        game.rooms[roomCounter].challenge[roomChallengeCounter] =
                             PHYSICAL;
                         roomChallengeCounter++;
                     }
                     else if (strncmp(line, "Puzzle", 6) == 0)
                     {
                         trimStart(line, 6);
-                        rooms[roomCounter].challenge[roomChallengeCounter] =
+                        game.rooms[roomCounter].challenge[roomChallengeCounter] =
                             PUZZLE;
                         roomChallengeCounter++;
                     }
@@ -207,7 +207,7 @@ void extractRooms(FILE* roomFile)
                     fprintf(
                         stderr,
                         "Too many challenges assigned to room %lu (max %u).\n",
-                        rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM
+                        game.rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM
                     );
                     exit(1);
                 }

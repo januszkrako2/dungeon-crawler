@@ -21,13 +21,13 @@ void helpText(void)
 
 void ask(void)
 {
-    if (fgets(response, MAX_RESPONSE_LENGTH, stdin) == NULL)
+    if (fgets(game.response, MAX_RESPONSE_LENGTH, stdin) == NULL)
     {
         perror("Error getting user input.");
         exit(1);
     }
 
-    char* newlinePosition = strchr(response, '\n');
+    char* newlinePosition = strchr(game.response, '\n');
 
     if (newlinePosition == NULL)
     {
@@ -41,30 +41,30 @@ void ask(void)
 
 void interpretInput(void)
 {
-    uint8_t reader = 0;
-    uint8_t writer = 0;
+    uint8_t read = 0;
+    uint8_t write = 0;
 
-    while (response[reader] != '\0')
+    while (game.response[read] != '\0')
     {
-        if (!isspace(response[reader]))
+        if (!isspace(game.response[read]))
         {
-            response[writer] = response[reader];
-            writer++;
+            game.response[write] = game.response[read];
+            write++;
         }
 
-        reader++;
+        read++;
     }
 
-    response[writer] = '\0';
+    game.response[write] = '\0';
 
-    if (strncmp(response, "now", 3) == 0)
+    if (strncmp(game.response, "now", 3) == 0)
     {
-        trimStart(response, 3);
+        trimStart(game.response, 3);
     }
 
-    if (strncmp(response, "go", 2) == 0)
+    if (strncmp(game.response, "go", 2) == 0)
     {
-        trimStart(response, 2);
+        trimStart(game.response, 2);
     }
 }
 
@@ -72,7 +72,7 @@ void gameLogic(void)
 {
     interpretInput();
 
-    if (strncmp(response, "help", 4) == 0)
+    if (strncmp(game.response, "help", 4) == 0)
     {
         printf("\n");
         helpText();

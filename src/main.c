@@ -19,9 +19,7 @@ TODO: Remove defines, replace with compile-time constants.
 #include "file_logic.h"
 #include "game_logic.h"
 
-Room rooms[MAX_ROOMS] = {0};
-char response[MAX_RESPONSE_LENGTH] = {0};
-Player player = {0};
+GameState game = {0};
 
 int main(void)
 {
@@ -30,14 +28,14 @@ int main(void)
     printf("Type 'help' at any time to get reminded of these instructions.\n");
     printf("\n");
 
-    while (player.name[0] == '\0')
+    while (game.player.name[0] == '\0')
     {
         printf("What is your name? ");
         ask();
 
         for (size_t i = 0; i < MAX_RESPONSE_LENGTH; i++)
         {
-            player.name[i] = response[i];
+            game.player.name[i] = game.response[i];
         }
     }
 
