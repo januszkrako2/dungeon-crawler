@@ -9,7 +9,7 @@
 #include "externs.h"
 #include "text_utils.h"
 
-void initialise(FILE* saveFile) {
+void initialiseRoomFile(FILE* roomFile) {
 	const char* initialConfiguration =
 		"[ROOMS]\n"
 		"\n"
@@ -29,27 +29,20 @@ void initialise(FILE* saveFile) {
 		"\tEAST: None\n"
 		"\tSOUTH: 100\n"
 		"\tWEST: None\n"
-		"CHALLENGE: Physical\n"
-		"\n"
-		"[HISTORY]\n"
-		"\n"
-		"[GAME STATE]\n"
-		"\n"
-		"PLAYER NAME: \n"
-		"CURRENT ROOM OF PLAYER: \n"
-		"ROOMS WITH COMPLETED CHALLENGES: \n";
-	fputs(initialConfiguration, saveFile);
-	rewind(saveFile);
+		"CHALLENGE: Physical\n";
+	fputs(initialConfiguration, roomFile);
+	rewind(roomFile);
 }
 
-void extractData(FILE* saveFile) {
+void extractRooms(FILE* roomFile) {
 	uint8_t roomCounter = 0;
 	bool connectingRooms = false;
 	size_t lineCounter = 1;
 	uint8_t lineCharacterCounter = 0;
 	char line[80] = {0};
+	size_t lineSize = sizeof(line);
 	char current;
-	while ((current = fgetc(saveFile)) != EOF) {
+	while ((current = fgetc(roomFile)) != EOF) {
 		if (lineCharacterCounter > sizeof(line)) {
 			perror("One of your lines in savefile.txt is too long");
 			exit(1);
@@ -173,165 +166,27 @@ void extractData(FILE* saveFile) {
 			}
 		}
 		
-		// Extract game state
-		if (current == '\n' && strncmp(line, "PLAYER NAME: ", 13) == 0) {
-			trimStart(line, 13);
-			for (uint8_t i = 0; i < PLAYER_NAME_LENGTH; i++) {
-				if (line[i] == '\n') {
-					break;
-				}
-				player.name[i] = line[i];
-			}
-		}
-		if (current == '\n'
-					&& strncmp(line, "CURRENT ROOM OF PLAYER: ", 24) == 0) {
-			trimStart(line, 24);
-			size_t currentRoomOfPlayer = stringToSizeT(line);
-			if (currentRoomOfPlayer == 0) {
-				fprintf(stderr,
-					"Room of player cannot be 0 (savefile line %lu).\n",
-					lineCounter);
-				exit(1);
-			} else {
-				size_t i;
-				for (i = 0; i < MAX_ROOMS; i++) {
-					if (rooms[i].roomNumber == currentRoomOfPlayer) {
-						player.currentRoom = rooms[i];
-						break;
-					}
-				}
-				if (i == MAX_ROOMS) {
-					fprintf(stderr,
-						"Invalid player room number (savefile line %lu).\n",
-						lineCounter);
-					exit(1);
-				}
-			}
-		}
-		if (current == '\n' &&
-						strncmp(line, 
-								"ROOMS WITH COMPLETED CHALLENGES: ",
-								33) == 0) {
-			trimStart(line, 33);
-			size_t lineLength = sizeof(line);
-			char buffer[lineLength];
-			for (size_t i = 0; i < lineLength; i++) {
-				buffer[i] = 0;
-			}
-			size_t bufferCounter = 0;
-			for (size_t i = 0; i < lineLength; i++) {
-				if (line[i] == '\n') {
-					break;
-				}
-				buffer[bufferCounter] = line[i];
-				if (buffer[bufferCounter] == ',') {
-					size_t currentRoomNumber = stringToSizeT(buffer);
-					if (currentRoomNumber == 0) {
-						perror("Invalid completed room number in savefile.");
-						exit(1);
-					}
-					size_t j;
-					for (j = 0; j < MAX_ROOMS; j++) {
-						if (currentRoomNumber == rooms[j].roomNumber) {
-							for (size_t k = 0;
-										k < MAX_CHALLENGES_PER_ROOM;
-										k++) {
-								rooms[j].challenge[k] = NONE;
-							}
-							break;
-						}
-					}
-					if (j == MAX_ROOMS) {
-						perror("A completed room number doesn't"
-							   "match a room number in the savefile."
-						);
-						exit(1);
-					}
-					memset(buffer, 0, lineLength);
-					bufferCounter = 0;
-					continue;
-				}
-				bufferCounter++;
-			}
-		}
-		
 		// Update line
 		if (current == '\n') {
 			lineCounter++;
 			lineCharacterCounter = 0;
-			memset(line, 0, sizeof(line));
+			memset(line, 0, lineSize);
 		}
 	}
 }
 
-void load() {
-	FILE* saveFile = fopen("savefile.txt", "r+");
-	if (saveFile == NULL) {
-		saveFile = fopen("savefile.txt", "w+");
-		if (saveFile == NULL) {
-			perror("Error creating save file.");
+void load(void) {
+	FILE* roomFile = fopen("rooms.txt", "r+");
+	if (roomFile == NULL) {
+		roomFile = fopen("rooms.txt", "w+");
+		if (roomFile == NULL) {
+			perror("Error creating room file.");
 			exit(1);
 		}
-		initialise(saveFile);
+		initialiseRoomFile(roomFile);
 	}
-	extractData(saveFile);
-	fclose(saveFile);
+	extractRooms(roomFile);
+	fclose(roomFile);
 }
 
-void saveHistory(FILE* saveFile) {
-	char line[80] = {0};
-	size_t lineCounter = 0;
-	uint8_t lineCharacterCounter = 0;
-	char current;
-	while((current = fgetc(saveFile)) != EOF) {
-		if (lineCharacterCounter > sizeof(line)) {
-			perror("One of your lines in savefile.txt is too long");
-			exit(1);
-		}
-		line[lineCharacterCounter] = current;
-		lineCharacterCounter++;
-		if (current == '\n') {
-			lineCounter++;
-			lineCharacterCounter = 0;
-			memset(line, 0, sizeof(line));
-		}
-	}
-}
-
-void saveGame(FILE* saveFile) {
-	char current;
-	char line[80] = {0};
-	uint8_t lineCharacterCounter = 0;
-	bool savingHistory = false;
-	size_t historyCounter = 0;
-	while ((current = fgetc(saveFile)) != EOF) {
-		line[lineCharacterCounter] = current;
-		lineCharacterCounter++;
-		if (lineCharacterCounter >= 80) {
-			perror("Too many characters on a line in savefile.txt");
-			exit(1);
-		}
-		if (current == '\n') {
-			if (strncmp(line, "[HISTORY]", 9) == 0) {
-				savingHistory = true;
-			}
-		}
-		if (savingHistory) {
-			if (current == '\n') {
-				// TODO: check for a number at the start of the line,
-				// add one if it's not there, then paste the response
-				// (when adding the first number, add one blank line before it)
-			}
-		}
-	}
-}
-
-void save() {
-	FILE* saveFile = fopen("savefile.txt", "w+");
-	if (saveFile == NULL) {
-		perror("Error saving to file - it doesn't exist.");
-		exit(1);
-	}
-	saveGame(saveFile);
-	fclose(saveFile);
-}
+void save(void) {}

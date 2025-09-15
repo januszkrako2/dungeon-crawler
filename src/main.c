@@ -4,6 +4,12 @@ displays the error message and and only quits once the user presses enter.
 This is for Windows compatibility -- when people double-click on the
 executable, it opens a terminal window that instantly closes before
 the user can see any error message.
+
+TODO: Convert to Allman style.
+
+TODO: Change integer types.
+
+TODO: Remove defines, replace with compile-time constants.
 */ 
 
 #include <stdint.h>
@@ -19,7 +25,7 @@ Room rooms[MAX_ROOMS] = {0};
 char response[MAX_RESPONSE_LENGTH] = {0};
 Player player = {0};
 
-int main() {
+int main(void) {
   load();
   helpText();
   printf("Type 'help' at any time to get reminded of these instructions.\n");

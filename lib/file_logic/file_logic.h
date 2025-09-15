@@ -1,10 +1,9 @@
 #ifndef FILE_LOGIC_H
 #define FILE_LOGIC_H
 
-void initialise(FILE* saveFile);
-void extractData(FILE* saveFile);
-void load();
-void saveGame(FILE* saveFile);
-void save();
+void initialiseRoomFile(FILE* roomFile);
+void extractRooms(FILE* roomFile);
+void load(void);
+void save(void);
 
 #endif

@@ -9,15 +9,15 @@
 #include "externs.h"
 #include "text_utils.h"
 
-void helpText() {
+void helpText(void) {
 	const char* helpText =
 		"Type compass directions to move.\n"
-		"Type 'attack' to attack delinquents.\n"
+		"Type 'attack' to attack.\n"
 		"Type 'solve' followed by a number to solve puzzles.\n";
-	printf(helpText);
+	printf("%s", helpText);
 }
 
-void ask() {
+void ask(void) {
 	if (fgets(response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
 		perror("Error getting user input.");
 		exit(1);
@@ -30,7 +30,7 @@ void ask() {
 	}
 }
 
-void interpretInput() {
+void interpretInput(void) {
 	uint8_t reader = 0;
 	uint8_t writer = 0;
 	while (response[reader] != '\0') {
@@ -49,7 +49,7 @@ void interpretInput() {
 	}
 }
 
-void gameLogic() {
+void gameLogic(void) {
 	interpretInput();
 	if (strncmp(response, "help", 4) == 0) {
 		printf("\n");
