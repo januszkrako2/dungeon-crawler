@@ -46,6 +46,7 @@ typedef struct
     Player player;
     Room rooms[MAX_ROOMS];
     char response[MAX_RESPONSE_LENGTH];
+    char introductoryText[INTRO_TEXT_MAX_LENGTH];
 } GameState;
 
 #endif

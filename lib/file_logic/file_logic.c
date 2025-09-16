@@ -31,7 +31,11 @@ void initialiseRoomFile(FILE* roomFile)
         "\tEAST: None\n"
         "\tSOUTH: 100\n"
         "\tWEST: None\n"
-        "CHALLENGE: Physical\n";
+        "CHALLENGE: Physical\n"
+        "\n"
+        "[INTRODUCTORY TEXT]\n"
+        "\n"
+        "You arise from a deep rest. There's a door up north.\n";
     
     fputs(initialConfiguration, roomFile);
     rewind(roomFile);
@@ -41,6 +45,7 @@ void extractRooms(FILE* roomFile)
 {
     uint8_t roomCounter = 0;
     bool connectingRooms = false;
+    bool checkingForIntroductoryText = false;
     size_t lineCounter = 1;
     uint8_t lineCharacterCounter = 0;
     char line[80] = {0};
@@ -74,10 +79,6 @@ void extractRooms(FILE* roomFile)
                     stringToSizeT(line);
                 game.rooms[roomCounter].roomNumber = 
                     roomNumberConverted;
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -181,14 +182,16 @@ void extractRooms(FILE* roomFile)
                     else if (strncmp(line, "Physical", 8) == 0)
                     {
                         trimStart(line, 8);
-                        game.rooms[roomCounter].challenge[roomChallengeCounter] =
+                        game.rooms[roomCounter]
+                            .challenge[roomChallengeCounter] =
                             PHYSICAL;
                         roomChallengeCounter++;
                     }
                     else if (strncmp(line, "Puzzle", 6) == 0)
                     {
                         trimStart(line, 6);
-                        game.rooms[roomCounter].challenge[roomChallengeCounter] =
+                        game.rooms[roomCounter]
+                            .challenge[roomChallengeCounter] =
                             PUZZLE;
                         roomChallengeCounter++;
                     }
@@ -208,7 +211,8 @@ void extractRooms(FILE* roomFile)
                     fprintf(
                         stderr,
                         "Too many challenges assigned to room %lu (max %u).\n",
-                        game.rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM
+                        game.rooms[roomCounter].roomNumber,
+                        MAX_CHALLENGES_PER_ROOM
                     );
                     exit(1);
                 }
@@ -217,10 +221,35 @@ void extractRooms(FILE* roomFile)
                 roomCounter++;
             }
         }
-        
+
+        // Extract introductory text
+        if (checkingForIntroductoryText)
+        {
+            if (current == '\n' && line[0] != '\n')
+            {
+                for (size_t i = 0; i < INTRO_TEXT_MAX_LENGTH; i++)
+                {
+                    game.introductoryText[i] = line[i];
+
+                    if (line[i] == '\0')
+                    {
+                        checkingForIntroductoryText = false;
+                        break;
+                    }
+                }
+
+                checkingForIntroductoryText = false;
+            }
+        }
+
         // Update line
         if (current == '\n')
         {
+            if (strncmp(line, "[INTRODUCTORY TEXT]", 19) == 0)
+            {
+                checkingForIntroductoryText = true;
+            }
+
             lineCounter++;
             lineCharacterCounter = 0;
             memset(line, 0, lineSize);
