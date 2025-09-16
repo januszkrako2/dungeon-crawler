@@ -3,17 +3,17 @@
 
 void trimStart(char* text, size_t characters)
 {
-    size_t stringLength = strlen(text);
-    for (size_t i = 0; i < stringLength; i++)
+    size_t i = 0;
+
+    while (text[i + characters] != '\0')
     {
-        if ((i + characters) <= stringLength)
-        {
-            text[i] = text[i + characters];
-        }
-        else
-        {
-            text[i] = '\0';
-        }
+        text[i] = text[i + characters];
+        i++;
+    }
+
+    for (size_t j = 0; j < characters; j++)
+    {
+        text[i + j] = '\0';
     }
 }
 
