@@ -1,10 +1,10 @@
 #include <string.h>
 #include <stdint.h>
 
-void trimStart(char* text, uint8_t characters)
+void trimStart(char* text, size_t characters)
 {
-    uint8_t stringLength = strlen(text);
-    for (uint8_t i = 0; i < stringLength; i++)
+    size_t stringLength = strlen(text);
+    for (size_t i = 0; i < stringLength; i++)
     {
         if ((i + characters) <= stringLength)
         {

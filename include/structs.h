@@ -3,13 +3,13 @@
 
 typedef struct
 {
-    uint8_t health;
+    uint32_t health;
 } PhysicalChallenge;
 
 typedef struct
 {
-    uint8_t firstNumber;
-    uint8_t secondNumber;
+    uint32_t firstNumber;
+    uint32_t secondNumber;
 } PuzzleChallenge;
 
 typedef enum

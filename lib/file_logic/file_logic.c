@@ -43,11 +43,11 @@ void initialiseRoomFile(FILE* roomFile)
 
 void extractRooms(FILE* roomFile)
 {
-    uint8_t roomCounter = 0;
+    size_t roomCounter = 0;
     bool connectingRooms = false;
     bool checkingForIntroductoryText = false;
     size_t lineCounter = 1;
-    uint8_t lineCharacterCounter = 0;
+    size_t lineCharacterCounter = 0;
     char line[80] = {0};
     size_t lineSize = sizeof(line);
     char current;
@@ -171,7 +171,7 @@ void extractRooms(FILE* roomFile)
             if (strncmp(line, "CHALLENGE: ", 11) == 0)
             {
                 trimStart(line, 11);
-                uint8_t roomChallengeCounter = 0;
+                size_t roomChallengeCounter = 0;
 
                 while (line[0] != '\n')
                 {

@@ -42,8 +42,8 @@ void ask(void)
 
 void interpretInput(void)
 {
-    uint8_t read = 0;
-    uint8_t write = 0;
+    size_t read = 0;
+    size_t write = 0;
 
     while (game.response[read] != '\0')
     {
