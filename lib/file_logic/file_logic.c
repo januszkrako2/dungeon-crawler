@@ -65,7 +65,7 @@ void extractRooms(FILE* roomFile)
 
         if (roomCounter == MAX_ROOMS)
         {
-            perror("Error: too many game.rooms in savefile.txt");
+            perror("Error: too many global.rooms in savefile.txt");
             exit(1);
         }
 
@@ -77,7 +77,7 @@ void extractRooms(FILE* roomFile)
                 trimStart(line, 13);
                 size_t roomNumberConverted = 
                     stringToSizeT(line);
-                game.rooms[roomCounter].roomNumber = 
+                global.rooms[roomCounter].roomNumber = 
                     roomNumberConverted;
             }
         }
@@ -91,7 +91,7 @@ void extractRooms(FILE* roomFile)
 
                 for (size_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH; i++)
                 {
-                    game.rooms[roomCounter].message[i] = line[i];
+                    global.rooms[roomCounter].message[i] = line[i];
 
                     if (line[i] == '\0')
                     {
@@ -119,7 +119,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tNORTH: ", 8) == 0)
                     {
                         trimStart(line, 8);
-                        game.rooms[roomCounter].connections[NORTH] =
+                        global.rooms[roomCounter].connections[NORTH] =
                             stringToSizeT(line);
                     }
 
@@ -131,7 +131,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tEAST: ", 7) == 0)
                     {
                         trimStart(line, 7);
-                        game.rooms[roomCounter].connections[EAST] =
+                        global.rooms[roomCounter].connections[EAST] =
                             stringToSizeT(line);
                     }
                     
@@ -143,7 +143,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tSOUTH: ", 8) == 0)
                     {
                         trimStart(line, 8);
-                        game.rooms[roomCounter].connections[SOUTH] =
+                        global.rooms[roomCounter].connections[SOUTH] =
                             stringToSizeT(line);
                     }
 
@@ -155,7 +155,7 @@ void extractRooms(FILE* roomFile)
                     if (strncmp(line, "\tWEST: ", 7) == 0)
                     {
                         trimStart(line, 7);
-                        game.rooms[roomCounter].connections[WEST] =
+                        global.rooms[roomCounter].connections[WEST] =
                             stringToSizeT(line);
                         connectingRooms = false;
                     }
@@ -182,7 +182,7 @@ void extractRooms(FILE* roomFile)
                     else if (strncmp(line, "Physical", 8) == 0)
                     {
                         trimStart(line, 8);
-                        game.rooms[roomCounter]
+                        global.rooms[roomCounter]
                             .challenge[roomChallengeCounter] =
                             PHYSICAL;
                         roomChallengeCounter++;
@@ -190,7 +190,7 @@ void extractRooms(FILE* roomFile)
                     else if (strncmp(line, "Puzzle", 6) == 0)
                     {
                         trimStart(line, 6);
-                        game.rooms[roomCounter]
+                        global.rooms[roomCounter]
                             .challenge[roomChallengeCounter] =
                             PUZZLE;
                         roomChallengeCounter++;
@@ -211,7 +211,7 @@ void extractRooms(FILE* roomFile)
                     fprintf(
                         stderr,
                         "Too many challenges assigned to room %lu (max %u).\n",
-                        game.rooms[roomCounter].roomNumber,
+                        global.rooms[roomCounter].roomNumber,
                         MAX_CHALLENGES_PER_ROOM
                     );
                     exit(1);
@@ -229,7 +229,7 @@ void extractRooms(FILE* roomFile)
             {
                 for (size_t i = 0; i < INTRO_TEXT_MAX_LENGTH; i++)
                 {
-                    game.introductoryText[i] = line[i];
+                    global.introductoryText[i] = line[i];
 
                     if (line[i] == '\0')
                     {
