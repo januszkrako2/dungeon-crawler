@@ -40,12 +40,10 @@ void printDebugInfo(void)
 
         printf("Room number: %lu\n", global.rooms[i].roomNumber);
         printf("Room message: %s\n", global.rooms[i].message);
-
         printf("North connection: %lu\n", global.rooms[i].connections[NORTH]);
         printf("East connection: %lu\n", global.rooms[i].connections[EAST]);
         printf("South connection: %lu\n", global.rooms[i].connections[SOUTH]);
         printf("West connection: %lu\n", global.rooms[i].connections[WEST]);
-
         printf("\n");
 
         for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++)
