@@ -19,16 +19,18 @@ void trimStart(char* text, size_t characters)
 
 size_t stringToSizeT(char* text)
 {
-    size_t convertedValue = 0;
-    size_t stringLength = strlen(text);
+    size_t value = 0;
+    size_t i = 0;
 
-    for (size_t i = 0; i < stringLength; i++)
+    while (text[i] != '\0')
     {
         if (text[i] >= '0' && text[i] <= '9')
         {
-            convertedValue = (convertedValue * 10) + text[i] - 48;
+            value = (value * 10) + text[i] - 48;
         }
+
+        i++;
     }
-    
-    return convertedValue;
+
+    return value;
 }
