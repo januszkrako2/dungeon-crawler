@@ -26,7 +26,7 @@ size_t stringToSizeT(char* text)
     {
         if (text[i] >= '0' && text[i] <= '9')
         {
-            value = (value * 10) + text[i] - 48;
+            value = (value * 10) + text[i] - '0';
         }
 
         i++;
