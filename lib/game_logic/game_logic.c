@@ -69,16 +69,6 @@ void interpretInput(void)
     }
 }
 
-void physicalChallenge(void)
-{
-
-}
-
-void puzzleChallenge(void)
-{
-
-}
-
 void gameLogic(void)
 {
     interpretInput();
