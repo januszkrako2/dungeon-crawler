@@ -74,11 +74,151 @@ void interpretInput(void)
     }
 }
 
+void physicalChallenge(void)
+{
+    const size_t DELINQUENT_HEALTH = 2;
+
+    PhysicalChallenge delinquent;
+    delinquent.health = DELINQUENT_HEALTH;
+
+    printf("A delinquent appears! They look at you menacingly.\n");
+
+    while (delinquent.health > 0)
+    {
+        printf("How do you respond? ");
+        ask();
+
+        if (strncmp(global.response, "attack", 6) != 0)
+        {
+            continue;
+        }
+
+        delinquent.health--;
+
+        if (delinquent.health > 0)
+        {
+            printf("\nThe delinquent takes a hit.\n");
+        }
+        else
+        {
+            printf("\nThe delinquent falls and dies.\n");
+        }
+    }
+}
+
+void puzzleChallenge(void)
+{
+    srand(time(NULL));
+
+    PuzzleChallenge puzzle;
+    puzzle.firstNumber = rand() % 100 + 1;
+    puzzle.secondNumber = rand() % 100 + 1;
+    size_t answer = puzzle.firstNumber + puzzle.secondNumber;
+
+    printf("There is a note on the floor. You pick it up.\n");
+    printf("It says, '%zu + %zu'.\n", puzzle.firstNumber, puzzle.secondNumber);
+
+    while (stringToSizeT(global.response) != answer)
+    {
+        printf("What could it possibly mean? ");
+        ask();
+    }
+
+    printf("\nYou write '%s' on the note. Nice.\n", global.response);
+}
+
+void clearChallenge(void)
+{
+    size_t i;
+
+    for (i = 0; i < MAX_ROOMS; i++)
+    {
+        if (global.player.currentRoom.roomNumber !=
+            global.rooms[i].roomNumber)
+        {
+            continue;
+        }
+
+        for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++)
+        {
+            if (global.rooms[i].challenge[j] != NONE)
+            {
+                global.rooms[i].challenge[j] = NONE;
+                break;
+            }
+        }
+
+        break;
+    }
+
+    if (i == MAX_ROOMS)
+    {
+        perror("Cannot clear challenge from a room.");
+        exit(1);
+    }
+}
+
+void challengeLogic(void)
+{
+    for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++)
+    {
+        switch (global.player.currentRoom.challenge[i])
+        {
+            case NONE:
+            {
+                break;
+            }
+
+            case PHYSICAL:
+            {
+                physicalChallenge();
+                clearChallenge();
+                break;
+            }
+
+            case PUZZLE:
+            {
+                puzzleChallenge();
+                clearChallenge();
+                break;
+            }
+        }
+    }
+}
+
+void moveLogic(size_t nextRoom)
+{
+    if (nextRoom == 0)
+    {
+        printf("\nYou hit a wall. Ouch!\n");
+        return;
+    }
+
+    size_t i;
+
+    for (i = 0; i < MAX_ROOMS; i++)
+    {
+        if (global.rooms[i].roomNumber == nextRoom)
+        {
+            global.player.currentRoom = global.rooms[i];
+            break;
+        }
+    }
+
+    if (i == MAX_ROOMS)
+    {
+        perror("Couldn't find room.");
+        exit(1);
+    }
+    
+    printf("\n%s", global.player.currentRoom.message);
+}
+
 void gameLogic(void)
 {
     interpretInput();
 
-    size_t roomNumberToFind = 0;
+    size_t nextRoom = 0;
     bool moved = false;
 
     if (strncmp(global.response, "help", 4) == 0)
@@ -90,134 +230,28 @@ void gameLogic(void)
     else if (strncmp(global.response, "north", 5) == 0)
     {
         moved = true;
-        roomNumberToFind = global.player.currentRoom.connections[NORTH];
+        nextRoom = global.player.currentRoom.connections[NORTH];
     }
     else if (strncmp(global.response, "east", 4) == 0)
     {
         moved = true;
-        roomNumberToFind = global.player.currentRoom.connections[EAST];
+        nextRoom = global.player.currentRoom.connections[EAST];
     }
     else if (strncmp(global.response, "south", 5) == 0)
     {
         moved = true;
-        roomNumberToFind = global.player.currentRoom.connections[SOUTH];
+        nextRoom = global.player.currentRoom.connections[SOUTH];
     }
     else if (strncmp(global.response, "west", 4) == 0)
     {
         moved = true;
-        roomNumberToFind = global.player.currentRoom.connections[WEST];
+        nextRoom = global.player.currentRoom.connections[WEST];
     }
 
     if (moved)
     {
-        if (roomNumberToFind == 0)
-        {
-            printf("\nYou hit a wall. Ouch!\n");
-            return;
-        }
-
-        size_t i;
-
-        for (i = 0; i < MAX_ROOMS; i++)
-        {
-            if (global.rooms[i].roomNumber == roomNumberToFind)
-            {
-                global.player.currentRoom = global.rooms[i];
-                break;
-            }
-        }
-
-        if (i == MAX_ROOMS)
-        {
-            perror("Couldn't find room.");
-            exit(1);
-        }
-        
-        printf("\n%s", global.player.currentRoom.message);
+        moveLogic(nextRoom);
     }
 
-    for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++)
-    {
-        if (global.player.currentRoom.challenge[i] == PHYSICAL)
-        {
-            PhysicalChallenge delinquent = {0};
-            delinquent.health = 2;
-
-            printf("A delinquent appears! They look at you menacingly.\n");
-
-            while (delinquent.health > 0)
-            {
-                printf("How do you respond? ");
-                ask();
-
-                if (strncmp(global.response, "attack", 6) == 0)
-                {
-                    delinquent.health--;
-
-                    if (delinquent.health > 0)
-                    {
-                        printf(
-                            "\nThe delinquent takes a hit.\n"
-                        );
-                    }
-                    else
-                    {
-                        printf(
-                            "\nThe delinquent falls and dies.\n"
-                        );
-                    }
-                }
-            }
-        }
-        else if (global.player.currentRoom.challenge[i] == PUZZLE)
-        {
-            srand(time(NULL));
-
-            PuzzleChallenge puzzle;
-            puzzle.firstNumber = rand() % 100 + 1;
-            puzzle.secondNumber = rand() % 100 + 1;
-            size_t answer = puzzle.firstNumber + puzzle.secondNumber;
-
-            printf("There is a note on the floor. You pick it up.\n");
-            printf("It says, '%zu + %zu'.\n",
-                puzzle.firstNumber, puzzle.secondNumber);
-
-            while (stringToSizeT(global.response) != answer)
-            {
-                printf("What could it possibly mean? ");
-                ask();
-            }
-
-            printf("\nYou write '%s' on the note. You feel satisfied.\n",
-                global.response);
-        }
-
-        // TODO: Fix all this logic, it doesn't work
-
-        size_t j;
-
-        for (j = 0; j < MAX_ROOMS; j++)
-        {
-            if (global.player.currentRoom.roomNumber ==
-                global.rooms[j].roomNumber)
-            {
-                for (size_t k = 0; k < MAX_CHALLENGES_PER_ROOM; k++)
-                {
-                    if (global.rooms[j].challenge[k] != NONE)
-                    {
-                        global.rooms[j].challenge[k] = NONE;
-                        break;
-                    }
-                }
-
-                break;
-            }
-        }
-
-        if (j == MAX_ROOMS)
-        {
-            perror("Cannot clear challenge from a room.");
-            exit(1);
-        }
-    }
+    challengeLogic();
 }
