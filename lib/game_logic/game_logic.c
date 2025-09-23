@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "constants.h"
 #include "structs.h"
@@ -16,7 +17,7 @@ void helpText(void)
     const char* helpText =
         "Type compass directions to move.\n"
         "Type 'attack' to attack.\n"
-        "Type 'solve' followed by a number to solve puzzles.\n";
+        "Type numbers to solve puzzles.\n";
     
     printf("%s", helpText);
 }
@@ -66,6 +67,10 @@ void interpretInput(void)
     else if (strncmp(global.response, "now", 3) == 0)
     {
         trimStart(global.response, 3);
+    }
+    else if (strncmp(global.response, "solve", 5) == 0)
+    {
+        trimStart(global.response, 5);
     }
 }
 
@@ -152,7 +157,7 @@ void gameLogic(void)
                     if (delinquent.health > 0)
                     {
                         printf(
-                            "\nThe delinquent takes a hit. They're unphased.\n"
+                            "\nThe delinquent takes a hit.\n"
                         );
                     }
                     else
@@ -160,39 +165,59 @@ void gameLogic(void)
                         printf(
                             "\nThe delinquent falls and dies.\n"
                         );
-                        
-                        size_t j;
-
-                        for (j = 0; j < MAX_ROOMS; j++)
-                        {
-                            if (global.player.currentRoom.roomNumber ==
-                                global.rooms[j].roomNumber)
-                            {
-                                for (size_t k = 0; k < MAX_CHALLENGES_PER_ROOM;
-                                    k++)
-                                {
-                                    if (global.rooms[j].challenge[k] ==
-                                        PHYSICAL)
-                                    {
-                                        global.rooms[j].challenge[k] = NONE;
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        if (j == MAX_ROOMS)
-                        {
-                            perror("Cannot clear challenge from a room.");
-                            exit(1);
-                        }
                     }
                 }
             }
         }
         else if (global.player.currentRoom.challenge[i] == PUZZLE)
         {
+            srand(time(NULL));
+
+            PuzzleChallenge puzzle;
+            puzzle.firstNumber = rand() % 100 + 1;
+            puzzle.secondNumber = rand() % 100 + 1;
+            size_t answer = puzzle.firstNumber + puzzle.secondNumber;
+
+            printf("There is a note on the floor. You pick it up.\n");
+            printf("It says, '%zu + %zu'.\n",
+                puzzle.firstNumber, puzzle.secondNumber);
+
+            while (stringToSizeT(global.response) != answer)
+            {
+                printf("What could it possibly mean? ");
+                ask();
+            }
+
+            printf("\nYou write '%s' on the note. You feel satisfied.\n",
+                global.response);
+        }
+
+        // TODO: Fix all this logic, it doesn't work
+
+        size_t j;
+
+        for (j = 0; j < MAX_ROOMS; j++)
+        {
+            if (global.player.currentRoom.roomNumber ==
+                global.rooms[j].roomNumber)
+            {
+                for (size_t k = 0; k < MAX_CHALLENGES_PER_ROOM; k++)
+                {
+                    if (global.rooms[j].challenge[k] != NONE)
+                    {
+                        global.rooms[j].challenge[k] = NONE;
+                        break;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        if (j == MAX_ROOMS)
+        {
+            perror("Cannot clear challenge from a room.");
+            exit(1);
         }
     }
 }

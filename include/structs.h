@@ -8,8 +8,8 @@ typedef struct
 
 typedef struct
 {
-    uint32_t firstNumber;
-    uint32_t secondNumber;
+    size_t firstNumber;
+    size_t secondNumber;
 } PuzzleChallenge;
 
 typedef enum
