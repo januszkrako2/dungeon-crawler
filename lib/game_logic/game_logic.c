@@ -22,26 +22,6 @@ void helpText(void)
     printf("%s", helpText);
 }
 
-void ask(void)
-{
-    if (fgets(global.response, MAX_RESPONSE_LENGTH, stdin) == NULL)
-    {
-        perror("Error getting user input.");
-        exit(1);
-    }
-
-    char* newlinePosition = strchr(global.response, '\n');
-
-    if (newlinePosition == NULL)
-    {
-        while(getchar() != '\n');
-    }
-    else
-    {
-        *newlinePosition = '\0';
-    }
-}
-
 void interpretInput(void)
 {
     size_t read = 0;
@@ -113,10 +93,10 @@ void puzzleChallenge(void)
     PuzzleChallenge puzzle;
     puzzle.firstNumber = rand() % 100 + 1;
     puzzle.secondNumber = rand() % 100 + 1;
-    size_t answer = puzzle.firstNumber + puzzle.secondNumber;
+    size_t answer = puzzle.firstNumber * puzzle.secondNumber;
 
     printf("There is a note on the floor. You pick it up.\n");
-    printf("It says, '%zu + %zu'.\n", puzzle.firstNumber, puzzle.secondNumber);
+    printf("It says, '%zu x %zu'.\n", puzzle.firstNumber, puzzle.secondNumber);
 
     while (stringToSizeT(global.response) != answer)
     {
@@ -133,8 +113,7 @@ void clearChallenge(void)
 
     for (i = 0; i < MAX_ROOMS; i++)
     {
-        if (global.player.currentRoom.roomNumber !=
-            global.rooms[i].roomNumber)
+        if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber)
         {
             continue;
         }
@@ -144,6 +123,7 @@ void clearChallenge(void)
             if (global.rooms[i].challenge[j] != NONE)
             {
                 global.rooms[i].challenge[j] = NONE;
+                global.player.currentRoom = global.rooms[i];
                 break;
             }
         }
@@ -154,7 +134,7 @@ void clearChallenge(void)
     if (i == MAX_ROOMS)
     {
         perror("Cannot clear challenge from a room.");
-        exit(1);
+        leave();
     }
 }
 
@@ -208,7 +188,7 @@ void moveLogic(size_t nextRoom)
     if (i == MAX_ROOMS)
     {
         perror("Couldn't find room.");
-        exit(1);
+        leave();
     }
     
     printf("\n%s", global.player.currentRoom.message);

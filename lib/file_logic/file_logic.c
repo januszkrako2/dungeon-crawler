@@ -57,7 +57,7 @@ void extractRooms(FILE* roomFile)
         if (lineCharacterCounter > sizeof(line))
         {
             perror("One of your lines in savefile.txt is too long");
-            exit(1);
+            leave();
         }
 
         line[lineCharacterCounter] = current;
@@ -66,7 +66,7 @@ void extractRooms(FILE* roomFile)
         if (roomCounter == MAX_ROOMS)
         {
             perror("Error: too many global.rooms in savefile.txt");
-            exit(1);
+            leave();
         }
 
         // Extract room number
@@ -214,7 +214,8 @@ void extractRooms(FILE* roomFile)
                         global.rooms[roomCounter].roomNumber,
                         MAX_CHALLENGES_PER_ROOM
                     );
-                    exit(1);
+
+                    leave();
                 }
 
                 roomChallengeCounter = 0;
@@ -268,7 +269,7 @@ void load(void)
         if (roomFile == NULL)
         {
             perror("Error creating room file.");
-            exit(1);
+            leave();
         }
 
         initialiseRoomFile(roomFile);

@@ -1,10 +1,4 @@
 /* 
-TODO: replace all exit(1)'s with a function that freezes the program,
-displays the error message and and only quits once the user presses enter.
-This is for Windows compatibility -- when people double-click on the
-executable, it opens a terminal window that instantly closes before
-the user can see any error message.
-
 TODO: Refactor file logic.
 */ 
 
