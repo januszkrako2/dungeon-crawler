@@ -1,6 +1,6 @@
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    main.c
+	main.c
 )
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
+	${CMAKE_SOURCE_DIR}/include
 )
