@@ -10,8 +10,7 @@
 
 #include "utils.h"
 
-void initialiseRoomFile(FILE* roomFile)
-{
+void initialiseRoomFile(FILE* roomFile) {
 	const char* initialConfiguration =
 		"[ROOMS]\n"
 		"\n"
@@ -41,8 +40,7 @@ void initialiseRoomFile(FILE* roomFile)
 	rewind(roomFile);
 }
 
-void extract(FILE* roomFile)
-{
+void extract(FILE* roomFile) {
 	size_t roomCounter = 0;
 	bool connectingRooms = false;
 	bool checkingForIntroductoryText = false;
@@ -52,28 +50,23 @@ void extract(FILE* roomFile)
 	size_t lineSize = sizeof(line);
 	char current;
 
-	while ((current = fgetc(roomFile)) != EOF)
-	{
-		if (lineCharacterCounter > sizeof(line))
-		{
+	while ((current = fgetc(roomFile)) != EOF) {
+		if (lineCharacterCounter > sizeof(line)) {
 			perror("One of your lines in savefile.txt is too long");
+			leave();
+		}
+
+		if (roomCounter == MAX_ROOMS) {
+			perror("Error: too many global.rooms in savefile.txt");
 			leave();
 		}
 
 		line[lineCharacterCounter] = current;
 		lineCharacterCounter++;
 
-		if (roomCounter == MAX_ROOMS)
-		{
-			perror("Error: too many global.rooms in savefile.txt");
-			leave();
-		}
-
 		// Extract room number
-		if (lineCounter % 9 == 3 && current == '\n')
-		{
-			if (strncmp(line, "ROOM NUMBER: ", 13) == 0)
-			{
+		if (lineCounter % 9 == 3 && current == '\n') {
+			if (strncmp(line, "ROOM NUMBER: ", 13) == 0) {
 				trimStart(line, 13);
 				size_t roomNumberConverted = stringToSizeT(line);
 				global.rooms[roomCounter].roomNumber = roomNumberConverted;
@@ -81,18 +74,14 @@ void extract(FILE* roomFile)
 		}
 
 		// Extract message
-		if (lineCounter % 9 == 4 && current == '\n')
-		{
-			if (strncmp(line, "MESSAGE: ", 9) == 0)
-			{
+		if (lineCounter % 9 == 4 && current == '\n') {
+			if (strncmp(line, "MESSAGE: ", 9) == 0) {
 				trimStart(line, 9);
 
-				for (size_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH; i++)
-				{
+				for (size_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH; i++) {
 					global.rooms[roomCounter].message[i] = line[i];
 
-					if (line[i] == '\0')
-					{
+					if (line[i] == '\0') {
 						break;
 					}
 				}
@@ -100,155 +89,103 @@ void extract(FILE* roomFile)
 		}
 
 		// Extract connections
-		if (lineCounter % 9 == 5 && current == '\n')
-		{
-			if (strncmp(line, "CONNECTIONS:", 12) == 0)
-			{
+		if (lineCounter % 9 == 5 && current == '\n') {
+			if (strncmp(line, "CONNECTIONS:", 12) == 0) {
 				connectingRooms = true;
 			}
 		}
 
-		if (connectingRooms && current == '\n')
-		{
-			switch (lineCounter % 9)
-			{
+		if (connectingRooms && current == '\n') {
+			switch (lineCounter % 9) {
 				case 6:
-				{
-					if (strncmp(line, "\tNORTH: ", 8) == 0)
-					{
+					if (strncmp(line, "\tNORTH: ", 8) == 0) {
 						trimStart(line, 8);
 						global.rooms[roomCounter].connections[NORTH] =
 							stringToSizeT(line);
 					}
-
 					break;
-				}
-				
 				case 7:
-				{
-					if (strncmp(line, "\tEAST: ", 7) == 0)
-					{
+					if (strncmp(line, "\tEAST: ", 7) == 0) {
 						trimStart(line, 7);
 						global.rooms[roomCounter].connections[EAST] =
 							stringToSizeT(line);
 					}
-					
 					break;
-				}
-
 				case 8:
-				{
-					if (strncmp(line, "\tSOUTH: ", 8) == 0)
-					{
+					if (strncmp(line, "\tSOUTH: ", 8) == 0) {
 						trimStart(line, 8);
 						global.rooms[roomCounter].connections[SOUTH] =
 							stringToSizeT(line);
 					}
-
 					break;
-				}
-				
 				case 0:
-				{
-					if (strncmp(line, "\tWEST: ", 7) == 0)
-					{
+					if (strncmp(line, "\tWEST: ", 7) == 0) {
 						trimStart(line, 7);
 						global.rooms[roomCounter].connections[WEST] =
 							stringToSizeT(line);
 						connectingRooms = false;
 					}
-
 					break;
-				}
 			}
 		}
 
 		// Extract challenges
-		if (lineCounter % 9 == 1 && lineCounter > 1 && current == '\n')
-		{
-			if (strncmp(line, "CHALLENGE: ", 11) == 0)
-			{
+		if (lineCounter % 9 == 1 && lineCounter > 1 && current == '\n') {
+			if (strncmp(line, "CHALLENGE: ", 11) == 0) {
 				trimStart(line, 11);
 				size_t roomChallengeCounter = 0;
-
-				while (line[0] != '\n')
-				{
-					if (strncmp(line, "None", 4) == 0)
-					{
+				while (line[0] != '\n') {
+					if (strncmp(line, "None", 4) == 0) {
 						trimStart(line, 4);
-					}
-					else if (strncmp(line, "Physical", 8) == 0)
-					{
+					} else if (strncmp(line, "Physical", 8) == 0) {
 						trimStart(line, 8);
-						global.rooms[roomCounter]
-							.challenge[roomChallengeCounter] =
-							PHYSICAL;
+						global.rooms[roomCounter].challenge[roomChallengeCounter] = PHYSICAL;
 						roomChallengeCounter++;
-					}
-					else if (strncmp(line, "Puzzle", 6) == 0)
-					{
+					} else if (strncmp(line, "Puzzle", 6) == 0) {
 						trimStart(line, 6);
-						global.rooms[roomCounter]
-							.challenge[roomChallengeCounter] =
-							PUZZLE;
+						global.rooms[roomCounter].challenge[roomChallengeCounter] = PUZZLE;
 						roomChallengeCounter++;
-					}
-					else if (strncmp(line, ", ", 2) == 0)
-					{
+					} else if (strncmp(line, ", ", 2) == 0) {
 						trimStart(line, 2);
-					}
-					else
-					{
+					} else {
 						memset(line, 0, sizeof(line));
 						line[0] = '\n';
 					}
 				}
 
-				if (roomChallengeCounter > MAX_CHALLENGES_PER_ROOM)
-				{
+				if (roomChallengeCounter > MAX_CHALLENGES_PER_ROOM) {
 					fprintf(
 						stderr,
 						"Too many challenges assigned to room %lu (max %u).\n",
 						global.rooms[roomCounter].roomNumber,
 						MAX_CHALLENGES_PER_ROOM
 					);
-
 					leave();
 				}
-
 				roomChallengeCounter = 0;
 				roomCounter++;
 			}
 		}
 
 		// Extract introductory text
-		if (checkingForIntroductoryText)
-		{
-			if (current == '\n' && line[0] != '\n')
-			{
-				for (size_t i = 0; i < INTRO_TEXT_MAX_LENGTH; i++)
-				{
+		if (checkingForIntroductoryText) {
+			if (current == '\n' && line[0] != '\n') {
+				for (size_t i = 0; i < INTRO_TEXT_MAX_LENGTH; i++) {
 					global.introductoryText[i] = line[i];
-
-					if (line[i] == '\0')
-					{
+					if (line[i] == '\0') {
 						checkingForIntroductoryText = false;
 						break;
 					}
 				}
-
 				checkingForIntroductoryText = false;
 			}
 		}
 
 		// Update line
-		if (current == '\n')
-		{
-			if (strncmp(line, "[INTRODUCTORY TEXT]", 19) == 0)
-			{
+		if (current == '\n') {
+			if (strncmp(line, "[INTRODUCTORY TEXT]", 19) == 0) {
 				checkingForIntroductoryText = true;
 			}
-
 			lineCounter++;
 			lineCharacterCounter = 0;
 			memset(line, 0, lineSize);
@@ -256,23 +193,16 @@ void extract(FILE* roomFile)
 	}
 }
 
-void load(void)
-{
+void load(void) {
 	FILE* roomFile = fopen("rooms.txt", "r+");
-
-	if (roomFile == NULL)
-	{
+	if (roomFile == NULL) {
 		roomFile = fopen("rooms.txt", "w+");
-
-		if (roomFile == NULL)
-		{
+		if (roomFile == NULL) {
 			perror("Error creating room file.");
 			leave();
 		}
-
 		initialiseRoomFile(roomFile);
 	}
-
 	extract(roomFile);
 	fclose(roomFile);
 }

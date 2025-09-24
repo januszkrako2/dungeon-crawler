@@ -1,8 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-enum
-{
+enum {
 	MAX_RESPONSE_LENGTH = 13,
 	MAX_ROOMS = 64,
 	MAX_ROOM_MESSAGE_LENGTH = 80,

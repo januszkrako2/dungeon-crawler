@@ -1,48 +1,41 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-typedef struct
-{
+typedef struct {
 	int32_t health;
 } PhysicalChallenge;
 
-typedef struct
-{
+typedef struct {
 	size_t firstNumber;
 	size_t secondNumber;
 } PuzzleChallenge;
 
-typedef enum
-{
+typedef enum {
 	NONE,
 	PHYSICAL,
 	PUZZLE
 } Challenge;
 
-typedef enum
-{
+typedef enum {
 	NORTH,
 	EAST,
 	SOUTH,
 	WEST
 } Direction;
 
-typedef struct
-{
+typedef struct {
 	size_t roomNumber;
 	char message[MAX_ROOM_MESSAGE_LENGTH];
 	size_t connections[4]; // North, East, South, West
 	Challenge challenge[MAX_CHALLENGES_PER_ROOM];
 } Room;
 
-typedef struct
-{
+typedef struct {
 	char name[PLAYER_NAME_LENGTH];
 	Room currentRoom;
 } Player;
 
-typedef struct
-{
+typedef struct {
 	Player player;
 	Room rooms[MAX_ROOMS];
 	char response[MAX_RESPONSE_LENGTH];

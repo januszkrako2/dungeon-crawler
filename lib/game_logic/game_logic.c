@@ -12,82 +12,60 @@
 
 #include "utils.h"
 
-void helpText(void)
-{
+void helpText(void) {
 	const char* helpText =
-		"Type compass directions to move.\n"
-		"Type 'attack' to attack.\n"
-		"Type numbers to solve puzzles.\n";
-	
+                             "Type compass directions to move.\n"
+	                     "Type 'attack' to attack.\n"
+	                     "Type numbers to solve puzzles.\n";
 	printf("%s", helpText);
 }
 
-void interpretInput(void)
-{
+void interpretInput(void) {
 	size_t read = 0;
 	size_t write = 0;
 
-	while (global.response[read] != '\0')
-	{
-		if (!isspace(global.response[read]))
-		{
+	while (global.response[read] != '\0') {
+		if (!isspace(global.response[read])) {
 			global.response[write] = global.response[read];
 			write++;
 		}
-
 		read++;
 	}
-
 	global.response[write] = '\0';
 
-	if (strncmp(global.response, "go", 2) == 0)
-	{
+	if (strncmp(global.response, "go", 2) == 0) {
 		trimStart(global.response, 2);
-	}
-	else if (strncmp(global.response, "now", 3) == 0)
-	{
+	} else if (strncmp(global.response, "now", 3) == 0) {
 		trimStart(global.response, 3);
-	}
-	else if (strncmp(global.response, "solve", 5) == 0)
-	{
+	} else if (strncmp(global.response, "solve", 5) == 0) {
 		trimStart(global.response, 5);
 	}
 }
 
-void physicalChallenge(void)
-{
+void physicalChallenge(void) {
 	const size_t DELINQUENT_HEALTH = 2;
-
 	PhysicalChallenge delinquent;
 	delinquent.health = DELINQUENT_HEALTH;
 
 	printf("A delinquent appears! They look at you menacingly.\n");
-
-	while (delinquent.health > 0)
-	{
+	while (delinquent.health > 0) {
 		printf("How do you respond? ");
 		ask();
 
-		if (strncmp(global.response, "attack", 6) != 0)
-		{
+		if (strncmp(global.response, "attack", 6) != 0) {
 			continue;
 		}
 
 		delinquent.health--;
-
-		if (delinquent.health > 0)
-		{
+		if (delinquent.health > 0) {
 			printf("\nThe delinquent takes a hit.\n");
-		}
-		else
-		{
+		} else {
 			printf("\nThe delinquent falls and dies.\n");
 		}
 	}
 }
 
-void puzzleChallenge(void)
-{
+void puzzleChallenge(void) {
 	srand(time(NULL));
 
 	PuzzleChallenge puzzle;
@@ -98,8 +76,7 @@ void puzzleChallenge(void)
 	printf("There is a note on the floor. You pick it up.\n");
 	printf("It says, '%zu x %zu'.\n", puzzle.firstNumber, puzzle.secondNumber);
 
-	while (stringToSizeT(global.response) != answer)
-	{
+	while (stringToSizeT(global.response) != answer) {
 		printf("What could it possibly mean? ");
 		ask();
 	}
@@ -107,30 +84,21 @@ void puzzleChallenge(void)
 	printf("\nYou write '%s' on the note. Nice.\n", global.response);
 }
 
-void clearChallenge(void)
-{
+void clearChallenge(void) {
 	size_t i;
-
-	for (i = 0; i < MAX_ROOMS; i++)
-	{
-		if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber)
-		{
+	for (i = 0; i < MAX_ROOMS; i++) {
+		if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber) {
 			continue;
 		}
-
-		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++)
-		{
-			if (global.rooms[i].challenge[j] != NONE)
-			{
+		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
+			if (global.rooms[i].challenge[j] != NONE) {
 				global.rooms[i].challenge[j] = NONE;
 				global.player.currentRoom = global.rooms[i];
 				break;
 			}
 		}
-
 		break;
 	}
-
 	if (i == MAX_ROOMS)
 	{
 		perror("Cannot clear challenge from a room.");
@@ -138,55 +106,37 @@ void clearChallenge(void)
 	}
 }
 
-void challengeLogic(void)
-{
-	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++)
-	{
-		switch (global.player.currentRoom.challenge[i])
-		{
-			case NONE:
-			{
-				break;
-			}
-
-			case PHYSICAL:
-			{
-				physicalChallenge();
-				clearChallenge();
-				break;
-			}
-
-			case PUZZLE:
-			{
-				puzzleChallenge();
-				clearChallenge();
-				break;
-			}
+void challengeLogic(void) {
+	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++) {
+		switch (global.player.currentRoom.challenge[i]) {
+		case NONE:
+			break;
+		case PHYSICAL:
+			physicalChallenge();
+			clearChallenge();
+			break;
+		case PUZZLE:
+			puzzleChallenge();
+			clearChallenge();
+			break;
 		}
 	}
 }
 
-void moveLogic(size_t nextRoom)
-{
-	if (nextRoom == 0)
-	{
+void moveLogic(size_t nextRoom) {
+	if (nextRoom == 0) {
 		printf("\nYou hit a wall. Ouch!\n");
 		return;
 	}
 
 	size_t i;
-
-	for (i = 0; i < MAX_ROOMS; i++)
-	{
-		if (global.rooms[i].roomNumber == nextRoom)
-		{
+	for (i = 0; i < MAX_ROOMS; i++) {
+		if (global.rooms[i].roomNumber == nextRoom) {
 			global.player.currentRoom = global.rooms[i];
 			break;
 		}
 	}
-
-	if (i == MAX_ROOMS)
-	{
+	if (i == MAX_ROOMS) {
 		perror("Couldn't find room.");
 		leave();
 	}
@@ -194,42 +144,29 @@ void moveLogic(size_t nextRoom)
 	printf("\n%s", global.player.currentRoom.message);
 }
 
-void gameLogic(void)
-{
+void gameLogic(void) {
 	interpretInput();
 
 	size_t nextRoom = 0;
 	bool moved = false;
-
-	if (strncmp(global.response, "help", 4) == 0)
-	{
+	if (strncmp(global.response, "help", 4) == 0) {
 		printf("\n");
 		helpText();
 		return;
-	}
-	else if (strncmp(global.response, "north", 5) == 0)
-	{
+	} else if (strncmp(global.response, "north", 5) == 0) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[NORTH];
-	}
-	else if (strncmp(global.response, "east", 4) == 0)
-	{
+	} else if (strncmp(global.response, "east", 4) == 0) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[EAST];
-	}
-	else if (strncmp(global.response, "south", 5) == 0)
-	{
+	} else if (strncmp(global.response, "south", 5) == 0) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[SOUTH];
-	}
-	else if (strncmp(global.response, "west", 4) == 0)
-	{
+	} else if (strncmp(global.response, "west", 4) == 0) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[WEST];
 	}
-
-	if (moved)
-	{
+	if (moved) {
 		moveLogic(nextRoom);
 	}
 
