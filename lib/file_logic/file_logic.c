@@ -41,7 +41,7 @@ void initialiseRoomFile(FILE* roomFile)
 	rewind(roomFile);
 }
 
-void extractRooms(FILE* roomFile)
+void extract(FILE* roomFile)
 {
 	size_t roomCounter = 0;
 	bool connectingRooms = false;
@@ -273,6 +273,6 @@ void load(void)
 		initialiseRoomFile(roomFile);
 	}
 
-	extractRooms(roomFile);
+	extract(roomFile);
 	fclose(roomFile);
 }

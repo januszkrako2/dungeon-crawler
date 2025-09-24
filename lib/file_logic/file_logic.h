@@ -2,7 +2,7 @@
 #define FILE_LOGIC_H
 
 void initialiseRoomFile(FILE* roomFile);
-void extractRooms(FILE* roomFile);
+void extract(FILE* roomFile);
 void load(void);
 
 #endif
