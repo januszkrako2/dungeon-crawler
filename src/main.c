@@ -1,7 +1,3 @@
-/* 
-TODO: Refactor file logic.
-*/ 
-
 #include <stdint.h>
 #include <stdio.h>
 

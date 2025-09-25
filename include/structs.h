@@ -1,6 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <stdbool.h>
+
 typedef struct {
 	int32_t health;
 } PhysicalChallenge;
@@ -31,9 +33,22 @@ typedef struct {
 } Room;
 
 typedef struct {
+	const char* text;
+	size_t size;
+} Connection;
+
+typedef struct {
 	char name[PLAYER_NAME_LENGTH];
 	Room currentRoom;
 } Player;
+
+typedef struct {
+	size_t roomCounter;
+	size_t lineCounter;
+	size_t lineCharacterCounter;
+	char line[MAX_FILE_LINE_LENGTH];
+	char current;
+} FileInfo;
 
 typedef struct {
 	Player player;
