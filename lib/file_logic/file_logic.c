@@ -193,10 +193,7 @@ void extractRoomChallenges(FileInfo* info) {
 		info->roomCounter++;
 		return;
 	}
-	fprintf(stderr,
-		"Too many challenges assigned to room %lu (max %u).\n",
-		global.rooms[info->roomCounter].roomNumber,
-		MAX_CHALLENGES_PER_ROOM);
+	fprintf(stderr, "Too many challenges assigned to room %lu (max %u).\n", global.rooms[info->roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
 	leave();
 }
 
