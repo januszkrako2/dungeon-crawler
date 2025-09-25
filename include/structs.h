@@ -43,6 +43,8 @@ typedef struct {
 } Player;
 
 typedef struct {
+	bool connectingRooms;
+	bool readingIntroductoryText;
 	size_t roomCounter;
 	size_t lineCounter;
 	size_t lineCharacterCounter;

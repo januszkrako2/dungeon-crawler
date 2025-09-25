@@ -13,6 +13,7 @@ void addRoomConnection(Connection connection, FileInfo* info, Direction directio
 void extractRoomConnections(FileInfo* info);
 void addRoomChallenges(FileInfo* info, size_t* challengeCounter);
 void extractRoomChallenges(FileInfo* info);
+void introductoryTextCheck(FileInfo info);
 void extractIntroductoryText(FileInfo* info);
 void updateLine(FileInfo* info);
 void extract(FILE* roomFile);

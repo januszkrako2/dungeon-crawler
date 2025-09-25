@@ -93,11 +93,24 @@ void extractRoomMessage(FileInfo* info) {
 	}
 }
 
+void connectingRoomCheck(FileInfo* info) {
+	if (info->current != '\n') {
+		return;
+	}
+	if (info->lineCounter % 9 != 5) {
+		return;
+	}
+	if (strncmp(info->line, "CONNECTIONS:", 12) != 0) {
+		return;
+	}
+	info->connectingRooms = true;
+}
+
 void addRoomConnection(Connection* connection, FileInfo* info, Direction direction) {
 	if (strncmp(info->line, connection->text, connection->size) != 0) {
 		return;
 	}
-	trimStart(info->line, 8);
+	trimStart(info->line, connection->size);
 	size_t index = info->roomCounter;
 	size_t number = stringToSizeT(info->line);
 	global.rooms[index].connections[direction] = number;
@@ -107,7 +120,7 @@ void extractRoomConnections(FileInfo* info) {
 	if (info->current != '\n') {
 		return;
 	}
-	if (strncmp(info->line, "CONNECTIONS:", 12) != 0) {
+	if (info->connectingRooms != true) {
 		return;
 	}
 	Connection connection = {0};
@@ -131,6 +144,7 @@ void extractRoomConnections(FileInfo* info) {
 		connection.text = "\tWEST: ";
 		connection.size = 7;
 		addRoomConnection(&connection, info, WEST);
+		info->connectingRooms = false;
 		break;
 	}
 }
@@ -186,7 +200,7 @@ void extractRoomChallenges(FileInfo* info) {
 	leave();
 }
 
-void extractIntroductoryText(FileInfo* info) {
+void introductoryTextCheck(FileInfo* info) {
 	if (info->current != '\n') {
 		return;
 	}
@@ -194,6 +208,13 @@ void extractIntroductoryText(FileInfo* info) {
 		return;
 	}
 	if (strncmp(info->line, "[INTRODUCTORY TEXT]", 19) != 0) {
+		return;
+	}
+	info->readingIntroductoryText = true;
+}
+
+void extractIntroductoryText(FileInfo* info) {
+	if (info->readingIntroductoryText != true) {
 		return;
 	}
 	size_t i = 0;
@@ -222,8 +243,10 @@ void extract(FILE* roomFile) {
 		extractValidate(&info);
 		extractRoomNumber(&info);
 		extractRoomMessage(&info);
+		connectingRoomCheck(&info);
 		extractRoomConnections(&info);
 		extractRoomChallenges(&info);
+		introductoryTextCheck(&info);
 		extractIntroductoryText(&info);
 		updateLine(&info);
 	}
