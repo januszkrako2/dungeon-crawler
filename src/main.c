@@ -44,10 +44,7 @@ void printDebugInfo(void) {
 int main(void) {
 	load();
 	helpText();
-	printf(
-	      "Type 'help' at any time to bring up these instructions.\n"
-	      "\n"
-	);
+	printf("Type 'help' at any time to bring up these instructions.\n\n");
 	while (global.response[0] == '\0') {
 		printf("What is your name? ");
 		ask();
