@@ -177,8 +177,6 @@ void gameLogic(void) {
 		moveLogic(nextRoom);
 	}
 
-	// TODO: add logic to check that the current room number is 1;
-	// if it is, it means it's the winning room and the program should call leave()
 	if (global.player.currentRoom.roomNumber == 1) {
 		leave();
 	}
