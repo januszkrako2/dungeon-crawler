@@ -6,7 +6,7 @@ A simple dungeon crawler game for the terminal.
 
 The game is designed to be configured by the user, making this project actually a small game engine of sorts. The configuration takes place in a file called rooms.txt, which is generated in the same directory as the executable when you run it. By default, the configuration looks like this:
 
-```C
+```
 [ROOMS]
 
 ROOM NUMBER: 100
