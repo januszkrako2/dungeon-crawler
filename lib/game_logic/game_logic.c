@@ -21,9 +21,9 @@ void helpText(void) {
 }
 
 void interpretInput(void) {
+	// TODO: convert capitals letters to lowercase
 	size_t read = 0;
 	size_t write = 0;
-
 	while (global.response[read] != '\0') {
 		if (!isspace(global.response[read])) {
 			global.response[write] = global.response[read];
@@ -169,6 +169,9 @@ void gameLogic(void) {
 	if (moved) {
 		moveLogic(nextRoom);
 	}
+
+	// TODO: add logic to check that the current room number is 1;
+	// if it is, it means it's the winning room and the program should call leave()
 
 	challengeLogic();
 }
