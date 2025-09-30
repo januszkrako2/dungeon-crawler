@@ -21,14 +21,18 @@ void helpText(void) {
 }
 
 void interpretInput(void) {
-	// TODO: convert capitals letters to lowercase
 	size_t read = 0;
 	size_t write = 0;
 	while (global.response[read] != '\0') {
-		if (!isspace(global.response[read])) {
-			global.response[write] = global.response[read];
-			write++;
+		if (isspace(global.response[read])) {
+			read++;
+			continue;
 		}
+		if (global.response[read] >= 'A' && global.response[read] <= 'Z') {
+			global.response[read] += 32;
+		}
+		global.response[write] = global.response[read];
+		write++;
 		read++;
 	}
 	global.response[write] = '\0';
@@ -51,6 +55,7 @@ void physicalChallenge(void) {
 	while (delinquent.health > 0) {
 		printf("How do you respond? ");
 		ask();
+		interpretInput();
 
 		if (strncmp(global.response, "attack", 6) != 0) {
 			continue;
@@ -79,6 +84,7 @@ void puzzleChallenge(void) {
 	while (stringToSizeT(global.response) != answer) {
 		printf("What could it possibly mean? ");
 		ask();
+		interpretInput();
 	}
 
 	printf("\nYou write '%s' on the note. Nice.\n", global.response);
@@ -166,12 +172,16 @@ void gameLogic(void) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[WEST];
 	}
+
 	if (moved) {
 		moveLogic(nextRoom);
 	}
 
 	// TODO: add logic to check that the current room number is 1;
 	// if it is, it means it's the winning room and the program should call leave()
+	if (global.player.currentRoom.roomNumber == 1) {
+		leave();
+	}
 
 	challengeLogic();
 }

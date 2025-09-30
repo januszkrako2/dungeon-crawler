@@ -9,7 +9,7 @@
 
 void leave(void) {
 	while (strncmp(global.response, "\n", 1) != 0) {
-		printf("\nPress enter to leave.\n");
+		printf("Press enter to leave.\n");
 
 		if (fgets(global.response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
 			perror("Error getting user input.");
