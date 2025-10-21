@@ -39,13 +39,9 @@ void interpretInput(void) {
 	}
 	global.response[write] = '\0';
 
-	if (strncmp(global.response, "go", 2) == 0) {
-		trimStart(global.response, 2);
-	} else if (strncmp(global.response, "now", 3) == 0) {
-		trimStart(global.response, 3);
-	} else if (strncmp(global.response, "solve", 5) == 0) {
-		trimStart(global.response, 5);
-	}
+	if (strncmp(global.response, "go", 2) == 0) trimStart(global.response, 2);
+	else if (strncmp(global.response, "now", 3) == 0) trimStart(global.response, 3);
+	else if (strncmp(global.response, "solve", 5) == 0) trimStart(global.response, 5);
 }
 
 void physicalChallenge(void) {
@@ -62,11 +58,8 @@ void physicalChallenge(void) {
 		if (strncmp(global.response, "attack", 6) != 0) continue;
 		
 		delinquent.health--;
-		if (delinquent.health > 0) {
-			printf("\nThe delinquent takes a hit.\n");
-		} else {
-			printf("\nThe delinquent falls and dies.\n");
-		}
+		if (delinquent.health > 0) printf("\nThe delinquent takes a hit.\n");
+		else printf("\nThe delinquent falls and dies.\n");
 	}
 }
 

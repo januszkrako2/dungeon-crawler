@@ -31,11 +31,8 @@ void ask(void) {
 
 	char* newlinePosition = strchr(global.response, '\n');
 
-	if (newlinePosition == NULL) {
-		while(getchar() != '\n');
-	} else {
-		*newlinePosition = '\0';
-	}
+	if (newlinePosition == NULL) while(getchar() != '\n');
+	else *newlinePosition = '\0';
 }
 
 void trimStart(char* text, size_t characters) {

@@ -7,7 +7,6 @@ void initialiseRoomFile(FILE* roomFile);
 void validateLine(FileInfo* info);
 void addRoomNumber(FileInfo* info);
 void extractRoomNumber(FileInfo* info);
-void addRoomMessage(FileInfo* info);
 void extractRoomMessage(FileInfo* info);
 void addRoomConnection(Connection connection, FileInfo* info, Direction direction);
 void extractRoomConnections(FileInfo* info);

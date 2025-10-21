@@ -76,23 +76,13 @@ void extractRoomNumber(FileInfo* info) {
 	}
 }
 
-void addRoomMessage(FileInfo* info) {
-	size_t i = 0;
-	while (info->line[i] != '\0') {
-		global.rooms[info->roomCounter].message[i] = info->line[i];
-		i++;
-	}
-	info->line[i] = '\0';
-}
-
 void extractRoomMessage(FileInfo* info) {
 	if (info->lineCounter % 9 != 4) return;
 	if (info->current != '\n') return;
-
-	if (strncmp(info->line, "MESSAGE: ", 9) == 0) {
-		trimStart(info->line, 9);
-		addRoomMessage(info);
-	}
+	if (strncmp(info->line, "MESSAGE: ", 9) != 0) return;
+	
+	trimStart(info->line, 9);
+	strcpy(global.rooms[info->roomCounter].message, info->line);
 }
 
 void connectingRoomCheck(FileInfo* info) {
@@ -144,9 +134,8 @@ void addRoomChallenges(FileInfo* info, size_t* challengeCounter) {
 	size_t roomIndex = info->roomCounter;
 	size_t* challengeIndex = challengeCounter;
 
-	if (strncmp(line, "None", 4) == 0) {
-		trimStart(line, 4);
-	} else if (strncmp(line, "Physical", 8) == 0) {
+	if (strncmp(line, "None", 4) == 0) trimStart(line, 4);
+	else if (strncmp(line, "Physical", 8) == 0) {
 		trimStart(line, 8);
 		global.rooms[roomIndex].challenge[(*challengeIndex)] = PHYSICAL;
 		(*challengeIndex)++;
@@ -154,11 +143,8 @@ void addRoomChallenges(FileInfo* info, size_t* challengeCounter) {
 		trimStart(line, 6);
 		global.rooms[roomIndex].challenge[(*challengeIndex)] = PUZZLE;
 		(*challengeIndex)++;
-	} else if (strncmp(line, ", ", 2) == 0) {
-		trimStart(line, 2);
-	} else {
-		line[0] = '\n';
-	}
+	} else if (strncmp(line, ", ", 2) == 0) trimStart(line, 2);
+	else line[0] = '\n';
 }
 
 void extractRoomChallenges(FileInfo* info) {
@@ -236,11 +222,13 @@ void load(void) {
 		fclose(roomFile);
 		return;
 	}
+
 	roomFile = fopen("rooms.txt", "w+");
 	if (roomFile == NULL) {
 		printf("Error creating room file.\n");
 		leave();
 	}
+
 	initialiseRoomFile(roomFile);
 	extract(roomFile);
 	fclose(roomFile);
