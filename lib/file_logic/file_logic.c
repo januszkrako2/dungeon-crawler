@@ -80,7 +80,7 @@ void extractRoomMessage(FileInfo* info) {
 	if (info->lineCounter % 9 != 4) return;
 	if (info->current != '\n') return;
 	if (strncmp(info->line, "MESSAGE: ", 9) != 0) return;
-	
+
 	trimStart(info->line, 9);
 	strcpy(global.rooms[info->roomCounter].message, info->line);
 }
@@ -189,7 +189,7 @@ void extractIntroductoryText(FileInfo* info) {
 
 void updateLine(FileInfo* info) {
 	if (info->current != '\n') return;
-	
+
 	validateLine(info);
 
 	info->lineCounter++;
