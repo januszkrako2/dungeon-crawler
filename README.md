@@ -2,6 +2,14 @@
 
 A simple dungeon crawler game for the terminal.
 
+## How to run
+
+This is a standard CMake project.
+
+On Windows, download, install and open Visual Studio and install the appropriate tools (blank project -> Tools -> Get Tools and Features -> Desktop development with C++), then open the folder and click the green arrow to run.
+
+On Linux, install CMake through your package manager and create a 'build' folder inside of the repo's directory. Using a terminal inside of the 'build' folder, run 'cmake ..' followed by 'cmake --build .', then simply './dungeon-crawler' to run.
+
 ## How to configure
 
 The game is designed to be configured by the user, making this project actually a small game engine of sorts. The configuration takes place in a file called rooms.txt, which is generated in the same directory as the executable when you run it. By default, the configuration looks like this:
