@@ -65,7 +65,7 @@ void errorOut(FileInfo* info) {
 	}
 	if (info->roomChallengeCounter > MAX_CHALLENGES_PER_ROOM) {
 		size_t currentRoom = global.rooms[info->roomCounter].roomNumber;
-		printf("Error: too many challenges assigned to room %lu (line %zu, max %u, currently %zu).\n", currentRoom, info->lineCounter, MAX_CHALLENGES_PER_ROOM, info->roomChallengeCounter);
+		printf("Error: too many challenges assigned to room %zu (line %zu, max %u, currently %zu).\n", currentRoom, info->lineCounter, MAX_CHALLENGES_PER_ROOM, info->roomChallengeCounter);
 		leave();
 	}
 }
