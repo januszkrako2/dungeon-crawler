@@ -49,15 +49,6 @@ void initialise_room_file(FILE* room_file) {
 	rewind(room_file);
 }
 
-void error_check(struct file* info) {
-	if (info->line_character_counter >= MAX_FILE_LINE_LENGTH) {
-		info->errored = true;
-	}
-	if (info->room_counter >= MAX_ROOMS) {
-		info->errored = true;
-	}
-}
-
 void error_out(struct file* info) {
 	if (info->line_character_counter > MAX_FILE_LINE_LENGTH) {
 		printf("Error: line %zu of rooms.txt is too long (max %d characters, currently %zu).\n", 
@@ -280,7 +271,14 @@ void extract(FILE* room_file) {
 	while ((info.current = fgetc(room_file)) != EOF) {
 		info.line[info.line_character_counter] = info.current;
 		info.line_character_counter++;
-		error_check(&info);
+
+		if (info.line_character_counter >= MAX_FILE_LINE_LENGTH) {
+			info.errored = true;
+		}
+		if (info.room_counter >= MAX_ROOMS) {
+			info.errored = true;
+		}
+
 		extract_room_number(&info);
 		extract_room_message(&info);
 		connecting_room_check(&info);

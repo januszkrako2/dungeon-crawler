@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 void initialise_room_file(FILE* room_file);
-void error_check(struct file* info);
 void extract_room_number(struct file* info);
 void extract_room_message(struct file* info);
 void add_room_connection(struct connection connection, struct file* info, enum direction direction);
