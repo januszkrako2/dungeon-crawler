@@ -3,7 +3,7 @@
 
 void leave(void);
 void ask(void);
-void trimStart(char* text, size_t characters);
-size_t stringToSizeT(char* text);
+void trim_start(char* text, size_t characters);
+size_t string_to_size_t(char* text);
 
 #endif

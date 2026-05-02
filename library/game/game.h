@@ -1,13 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-void helpText(void);
-void interpretInput(void);
-void physicalChallenge(void);
-void puzzleChallenge(void);
-void clearChallenge(void);
-void challengeLogic(void);
-void moveLogic(size_t nextRoom);
-void gameLogic(void);
+void help_text(void);
+void interpret_input(void);
+void physical_challenge(void);
+void puzzle_challenge(void);
+void clear_challenge(void);
+void challenge_logic(void);
+void move_logic(size_t next_room);
+void game_logic(void);
 
 #endif

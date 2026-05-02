@@ -10,8 +10,8 @@
 
 #include "utility.h"
 
-void initialiseRoomFile(FILE* roomFile) {
-	const char* initialConfiguration =
+void initialise_room_file(FILE* room_file) {
+	const char* initial_configuration =
 	"[ROOMS]\n"
 	"\n"
 	"ROOM NUMBER: 100\n"
@@ -45,200 +45,202 @@ void initialiseRoomFile(FILE* roomFile) {
 	"\n"
 	"You arise from a deep rest. There's a door up north.\n";
 
-	fputs(initialConfiguration, roomFile);
-	rewind(roomFile);
+	fputs(initial_configuration, room_file);
+	rewind(room_file);
 }
 
-void errorCheck(struct file* info) {
-	if (info->lineCharacterCounter >= MAX_FILE_LINE_LENGTH) info->errored = true;
-	if (info->roomCounter >= MAX_ROOMS) info->errored = true;
+void error_check(struct file* info) {
+	if (info->line_character_counter >= MAX_FILE_LINE_LENGTH) info->errored = true;
+	if (info->room_counter >= MAX_ROOMS) info->errored = true;
 }
 
-void errorOut(struct file* info) {
-	if (info->lineCharacterCounter > MAX_FILE_LINE_LENGTH) {
-		printf("Error: line %zu of rooms.txt is too long (max %d characters, currently %zu).\n", info->lineCounter, MAX_FILE_LINE_LENGTH, info->lineCharacterCounter);
+void error_out(struct file* info) {
+	if (info->line_character_counter > MAX_FILE_LINE_LENGTH) {
+		printf("Error: line %zu of rooms.txt is too long (max %d characters, currently %zu).\n", 
+		       info->line_counter, MAX_FILE_LINE_LENGTH, info->line_character_counter);
 		leave();
 	}
-	if (info->roomCounter >= MAX_ROOMS) {
+	if (info->room_counter >= MAX_ROOMS) {
 		printf("Error: too many rooms in rooms.txt (max %d).\n", MAX_ROOMS);
 		leave();
 	}
-	if (info->roomChallengeCounter > MAX_CHALLENGES_PER_ROOM) {
-		size_t currentRoom = game.rooms[info->roomCounter].roomNumber;
-		printf("Error: too many challenges assigned to room %zu (line %zu, max %u, currently %zu).\n", currentRoom, info->lineCounter, MAX_CHALLENGES_PER_ROOM, info->roomChallengeCounter);
+	if (info->room_challenge_counter > MAX_CHALLENGES_PER_ROOM) {
+		size_t currentRoom = game.rooms[info->room_counter].room_number;
+		printf("Error: too many challenges assigned to room %zu (line %zu, max %u, currently %zu).\n",
+		       currentRoom, info->line_counter, MAX_CHALLENGES_PER_ROOM, info->room_challenge_counter);
 		leave();
 	}
 }
 
-void extractRoomNumber(struct file* info) {
+void extract_room_number(struct file* info) {
 	if (info->errored) return;
-	if (info->lineCounter % 9 != 3) return;
+	if (info->line_counter % 9 != 3) return;
 	if (info->current != '\n') return;
 
 	if (strncmp(info->line, "ROOM NUMBER: ", 13) == 0) {
-		trimStart(info->line, 13);
-		size_t extracted = stringToSizeT(info->line);
-		game.rooms[info->roomCounter].roomNumber = extracted;
+		trim_start(info->line, 13);
+		size_t extracted = string_to_size_t(info->line);
+		game.rooms[info->room_counter].room_number = extracted;
 	}
 }
 
-void extractRoomMessage(struct file* info) {
+void extract_room_message(struct file* info) {
 	if (info->errored) return;
-	if (info->lineCounter % 9 != 4) return;
+	if (info->line_counter % 9 != 4) return;
 	if (info->current != '\n') return;
 	if (strncmp(info->line, "MESSAGE: ", 9) != 0) return;
 	
-	trimStart(info->line, 9);
-	strcpy(game.rooms[info->roomCounter].message, info->line);
+	trim_start(info->line, 9);
+	strcpy(game.rooms[info->room_counter].message, info->line);
 }
 
-void connectingRoomCheck(struct file* info) {
+void connecting_room_check(struct file* info) {
 	if (info->errored) return;
 	if (info->current != '\n') return;
-	if (info->lineCounter % 9 != 5) return;
+	if (info->line_counter % 9 != 5) return;
 	if (strncmp(info->line, "CONNECTIONS:", 12) != 0) return;
 
-	info->connectingRooms = true;
+	info->is_connecting_rooms = true;
 }
 
-void addRoomConnection(struct connection* connection, struct file* info, enum direction direction) {
+void add_room_connection(struct connection* connection, struct file* info, enum direction direction) {
 	if (strncmp(info->line, connection->text, connection->size) != 0) return;
-	trimStart(info->line, connection->size);
-	game.rooms[info->roomCounter].connections[direction] = stringToSizeT(info->line);
+	trim_start(info->line, connection->size);
+	game.rooms[info->room_counter].connections[direction] = string_to_size_t(info->line);
 }
 
-void extractRoomConnections(struct file* info) {
+void extract_room_connections(struct file* info) {
 	if (info->errored) return;
 	if (info->current != '\n') return;
-	if (info->connectingRooms != true) return;
+	if (info->is_connecting_rooms != true) return;
 
 	struct connection connection = {0};
-	switch (info->lineCounter % 9) {
+	switch (info->line_counter % 9) {
 	case 6:
 		connection.text = "\tNORTH: ";
 		connection.size = 8;
-		addRoomConnection(&connection, info, NORTH);
+		add_room_connection(&connection, info, NORTH);
 		break;
 	case 7:
 		connection.text = "\tEAST: ";
 		connection.size = 7;
-		addRoomConnection(&connection, info, EAST);
+		add_room_connection(&connection, info, EAST);
 		break;
 	case 8:
 		connection.text = "\tSOUTH: ";
 		connection.size = 8;
-		addRoomConnection(&connection, info, SOUTH);
+		add_room_connection(&connection, info, SOUTH);
 		break;
 	case 0:
 		connection.text = "\tWEST: ";
 		connection.size = 7;
-		addRoomConnection(&connection, info, WEST);
-		info->connectingRooms = false;
+		add_room_connection(&connection, info, WEST);
+		info->is_connecting_rooms = false;
 		break;
 	}
 }
 
-void addRoomChallenges(struct file* info) {
+void add_room_challenges(struct file* info) {
 	char* line = info->line;
-	size_t roomIndex = info->roomCounter;
+	size_t roomIndex = info->room_counter;
 
-	if (strncmp(line, "None", 4) == 0) trimStart(line, 4);
+	if (strncmp(line, "None", 4) == 0) trim_start(line, 4);
 	else if (strncmp(line, "Physical", 8) == 0) {
-		trimStart(line, 8);
-		game.rooms[roomIndex].challenge[info->roomChallengeCounter] = PHYSICAL;
-		info->roomChallengeCounter++;
+		trim_start(line, 8);
+		game.rooms[roomIndex].challenge[info->room_challenge_counter] = PHYSICAL;
+		info->room_challenge_counter++;
 	} else if (strncmp(line, "Puzzle", 6) == 0) {
-		trimStart(line, 6);
-		game.rooms[roomIndex].challenge[info->roomChallengeCounter] = PUZZLE;
-		info->roomChallengeCounter++;
-	} else if (strncmp(line, ", ", 2) == 0) trimStart(line, 2);
+		trim_start(line, 6);
+		game.rooms[roomIndex].challenge[info->room_challenge_counter] = PUZZLE;
+		info->room_challenge_counter++;
+	} else if (strncmp(line, ", ", 2) == 0) trim_start(line, 2);
 	else line[0] = '\n';
 }
 
-void extractRoomChallenges(struct file* info) {
+void extract_room_challenges(struct file* info) {
 	if (info->errored) return;
-	if (info->lineCounter % 9 != 1) return;
-	if (info->lineCounter <= 1) return;
+	if (info->line_counter % 9 != 1) return;
+	if (info->line_counter <= 1) return;
 	if (info->current != '\n') return;
 	if (strncmp(info->line, "CHALLENGE: ", 11) != 0) return;
 
-	trimStart(info->line, 11);
+	trim_start(info->line, 11);
 
-	while (info->line[0] != '\n') addRoomChallenges(info);
+	while (info->line[0] != '\n') add_room_challenges(info);
 
-	if (info->roomChallengeCounter > MAX_CHALLENGES_PER_ROOM) {
+	if (info->room_challenge_counter > MAX_CHALLENGES_PER_ROOM) {
 		info->errored = true;
 		return;
 	}
 
-	info->roomChallengeCounter = 0;
-	info->roomCounter++;
+	info->room_challenge_counter = 0;
+	info->room_counter++;
 }
 
-void introductoryTextCheck(struct file* info) {
+void introductory_text_check(struct file* info) {
 	if (info->errored) return;
 	if (info->current != '\n') return;
 	if (info->line[0] == '\n') return;
 	if (strncmp(info->line, "[INTRODUCTORY TEXT]", 19) != 0) return;
 
-	info->readingIntroductoryText = true;
+	info->is_reading_introductory_text = true;
 }
 
-void extractIntroductoryText(struct file* info) {
+void extract_introductory_text(struct file* info) {
 	if (info->errored) return;
-	if (info->readingIntroductoryText != true) return;
+	if (info->is_reading_introductory_text != true) return;
 
 	size_t i = 0;
 	while (info->line[i] != '\0') {
-		game.introductoryText[i] = info->line[i];
+		game.introductory_text[i] = info->line[i];
 		i++;
 	}
 }
 
-void updateLine(struct file* info) {
+void update_line(struct file* info) {
 	if (info->current != '\n') return;
 
-	if (info->errored) errorOut(info);
+	if (info->errored) error_out(info);
 
-	info->lineCounter++;
-	info->lineCharacterCounter = 0;
+	info->line_counter++;
+	info->line_character_counter = 0;
 	memset(info->line, 0, MAX_FILE_LINE_LENGTH);
 }
 
-void extract(FILE* roomFile) {
+void extract(FILE* room_file) {
 	struct file info = {0};
-	info.lineCounter = 1;
+	info.line_counter = 1;
 
-	while ((info.current = fgetc(roomFile)) != EOF) {
-		info.line[info.lineCharacterCounter] = info.current;
-		info.lineCharacterCounter++;
-		errorCheck(&info);
-		extractRoomNumber(&info);
-		extractRoomMessage(&info);
-		connectingRoomCheck(&info);
-		extractRoomConnections(&info);
-		extractRoomChallenges(&info);
-		introductoryTextCheck(&info);
-		extractIntroductoryText(&info);
-		updateLine(&info);
+	while ((info.current = fgetc(room_file)) != EOF) {
+		info.line[info.line_character_counter] = info.current;
+		info.line_character_counter++;
+		error_check(&info);
+		extract_room_number(&info);
+		extract_room_message(&info);
+		connecting_room_check(&info);
+		extract_room_connections(&info);
+		extract_room_challenges(&info);
+		introductory_text_check(&info);
+		extract_introductory_text(&info);
+		update_line(&info);
 	}
 }
 
 void load(void) {
-	FILE* roomFile = fopen("rooms.txt", "r+");
-	if (roomFile != NULL) {
-		extract(roomFile);
-		fclose(roomFile);
+	FILE* room_file = fopen("rooms.txt", "r+");
+	if (room_file != NULL) {
+		extract(room_file);
+		fclose(room_file);
 		return;
 	}
 
-	roomFile = fopen("rooms.txt", "w+");
-	if (roomFile == NULL) {
+	room_file = fopen("rooms.txt", "w+");
+	if (room_file == NULL) {
 		printf("Error: Cannot create room file.\n");
 		leave();
 	}
 
-	initialiseRoomFile(roomFile);
-	extract(roomFile);
-	fclose(roomFile);
+	initialise_room_file(room_file);
+	extract(room_file);
+	fclose(room_file);
 }

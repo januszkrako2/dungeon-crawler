@@ -12,19 +12,19 @@
 
 struct game game = {0};
 
-void printDebugInfo(void) {
+void print_debug_info(void) {
 	printf("\n");
 	printf("Player name: %s\n", game.player.name);
 	printf("Last response: %s\n", game.response);
-	printf("Introductory text: %s", game.introductoryText);
+	printf("Introductory text: %s", game.introductory_text);
 	printf("\n");
 	printf("[ROOMS]\n");
 	printf("\n");
 
 	for (size_t i = 0; i < MAX_ROOMS; i++) {
-		if (game.rooms[i].roomNumber == 0) break;
+		if (game.rooms[i].room_number == 0) break;
 
-		printf("Room number: %zu\n", game.rooms[i].roomNumber);
+		printf("Room number: %zu\n", game.rooms[i].room_number);
 		printf("Room message: %s\n", game.rooms[i].message);
 		printf("North connection: %zu\n", game.rooms[i].connections[NORTH]);
 		printf("East connection: %zu\n", game.rooms[i].connections[EAST]);
@@ -38,7 +38,7 @@ void printDebugInfo(void) {
 
 int main(void) {
 	load();
-	helpText();
+	help_text();
 	printf("Type 'help' at any time to bring up these instructions.\n\n");
 
 	while (game.response[0] == '\0') {
@@ -47,14 +47,14 @@ int main(void) {
 	}
 
 	strncpy(game.player.name, game.response, MAX_RESPONSE_LENGTH);
-	game.player.currentRoom = game.rooms[0];
-	printf("\n%s", game.introductoryText);
+	game.player.room = game.rooms[0];
+	printf("\n%s", game.introductory_text);
 
 	while (1) {
 		printf("What would you like to do? ");
 		ask();
-		gameLogic();
-		//printDebugInfo();
+		game_logic();
+		//print_debug_info();
 	}
 
 	return 0;
