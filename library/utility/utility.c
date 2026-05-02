@@ -17,7 +17,9 @@ void leave(void) {
 		}
 
 		char* newline_position = strchr(game.response, '\n');
-		if (newline_position == NULL) while(getchar() != '\n');
+		if (newline_position == NULL) {
+			while(getchar() != '\n');
+		}
 	}
 
 	exit(1);
@@ -31,8 +33,11 @@ void ask(void) {
 
 	char* newline_position = strchr(game.response, '\n');
 
-	if (newline_position == NULL) while(getchar() != '\n');
-	else *newline_position = '\0';
+	if (newline_position == NULL) {
+		while (getchar() != '\n');
+	} else {
+		*newline_position = '\0';
+	}
 }
 
 void trim_start(char* text, size_t characters) {
@@ -43,7 +48,9 @@ void trim_start(char* text, size_t characters) {
 		i++;
 	}
 
-	for (size_t j = 0; j < characters; j++) text[i + j] = '\0';
+	for (size_t j = 0; j < characters; j++) {
+		text[i + j] = '\0';
+	}
 }
 
 size_t string_to_size_t(char* text) {
@@ -51,7 +58,9 @@ size_t string_to_size_t(char* text) {
 	size_t i = 0;
 
 	while (text[i] != '\0') {
-		if (text[i] >= '0' && text[i] <= '9') value = (value * 10) + text[i] - '0';
+		if (text[i] >= '0' && text[i] <= '9') {
+			value = (value * 10) + text[i] - '0';
+		}
 		i++;
 	}
 

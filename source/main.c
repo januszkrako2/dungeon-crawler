@@ -22,7 +22,9 @@ void print_debug_info(void) {
 	printf("\n");
 
 	for (size_t i = 0; i < MAX_ROOMS; i++) {
-		if (game.rooms[i].room_number == 0) break;
+		if (game.rooms[i].room_number == 0) {
+			break;
+		}
 
 		printf("Room number: %zu\n", game.rooms[i].room_number);
 		printf("Room message: %s\n", game.rooms[i].message);
@@ -31,7 +33,9 @@ void print_debug_info(void) {
 		printf("South connection: %zu\n", game.rooms[i].connections[SOUTH]);
 		printf("West connection: %zu\n", game.rooms[i].connections[WEST]);
 		printf("\n");
-		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) printf("Challenge %zu: %u\n", j + 1, game.rooms[i].challenge[j]);
+		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
+			printf("Challenge %zu: %u\n", j + 1, game.rooms[i].challenge[j]);
+		}
 		printf("\n");
 	}
 }

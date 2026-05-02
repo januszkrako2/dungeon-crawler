@@ -30,7 +30,9 @@ void interpret_input(void) {
 			continue;
 		}
 
-		if (game.response[read] >= 'A' && game.response[read] <= 'Z') game.response[read] += 32;
+		if (game.response[read] >= 'A' && game.response[read] <= 'Z') {
+			game.response[read] += 32;
+		}
 
 		game.response[write] = game.response[read];
 		write++;
@@ -38,9 +40,13 @@ void interpret_input(void) {
 	}
 	game.response[write] = '\0';
 
-	if (strncmp(game.response, "go", 2) == 0) trim_start(game.response, 2);
-	else if (strncmp(game.response, "now", 3) == 0) trim_start(game.response, 3);
-	else if (strncmp(game.response, "solve", 5) == 0) trim_start(game.response, 5);
+	if (strncmp(game.response, "go", 2) == 0) {
+		trim_start(game.response, 2);
+	} else if (strncmp(game.response, "now", 3) == 0) {
+		trim_start(game.response, 3);
+	} else if (strncmp(game.response, "solve", 5) == 0) {
+		trim_start(game.response, 5);
+	}
 }
 
 void physical_challenge(void) {
@@ -54,11 +60,16 @@ void physical_challenge(void) {
 		ask();
 
 		interpret_input();
-		if (strncmp(game.response, "attack", 6) != 0) continue;
+		if (strncmp(game.response, "attack", 6) != 0) {
+			continue;
+		}
 		
 		delinquent.health--;
-		if (delinquent.health > 0) printf("\nThe delinquent takes a hit.\n");
-		else printf("\nThe delinquent falls and dies.\n");
+		if (delinquent.health > 0) {
+			printf("\nThe delinquent takes a hit.\n");
+		} else {
+			printf("\nThe delinquent falls and dies.\n");
+		}
 	}
 }
 
@@ -85,7 +96,9 @@ void puzzle_challenge(void) {
 void clear_challenge(void) {
 	size_t i;
 	for (i = 0; i < MAX_ROOMS; i++) {
-		if (game.player.room.room_number != game.rooms[i].room_number) continue;
+		if (game.player.room.room_number != game.rooms[i].room_number) {
+			continue;
+		}
 		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
 			if (game.rooms[i].challenge[j] != NONE) {
 				game.rooms[i].challenge[j] = NONE;
@@ -161,7 +174,9 @@ void game_logic(void) {
 		moved = true;
 		next_room = game.player.room.connections[WEST];
 	}
-	if (moved) move_logic(next_room);
+	if (moved) {
+		move_logic(next_room);
+	}
 
 	if (game.player.room.room_number == 1) {
 		printf("Congratulations, %s!\n", game.player.name);
