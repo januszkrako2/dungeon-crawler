@@ -21,7 +21,7 @@ void help_text(void) {
 	printf("%s", help_text);
 }
 
-void interpret_input(void) {
+static void interpret_input(void) {
 	size_t read = 0;
 	size_t write = 0;
 	while (game.response[read] != '\0') {
@@ -49,7 +49,7 @@ void interpret_input(void) {
 	}
 }
 
-void physical_challenge(void) {
+static void physical_challenge(void) {
 	struct physical_challenge delinquent;
 	delinquent.health = 2;
 
@@ -73,7 +73,7 @@ void physical_challenge(void) {
 	}
 }
 
-void puzzle_challenge(void) {
+static void puzzle_challenge(void) {
 	srand(time(NULL));
 
 	struct puzzle_challenge puzzle;
@@ -93,7 +93,7 @@ void puzzle_challenge(void) {
 	printf("\nYou write '%s' on the note. Nice.\n", game.response);
 }
 
-void clear_challenge(void) {
+static void clear_challenge(void) {
 	size_t i;
 	for (i = 0; i < MAX_ROOMS; i++) {
 		if (game.player.room.room_number != game.rooms[i].room_number) {
@@ -114,7 +114,7 @@ void clear_challenge(void) {
 	}
 }
 
-void challenge_logic(void) {
+static void challenge_logic(void) {
 	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++) {
 		switch (game.player.room.challenge[i]) {
 		case NONE:
@@ -131,7 +131,7 @@ void challenge_logic(void) {
 	}
 }
 
-void move_logic(size_t next_room) {
+static void move_logic(size_t next_room) {
 	if (next_room == 0) {
 		printf("\nYou hit a wall. Ouch!\n");
 		return;

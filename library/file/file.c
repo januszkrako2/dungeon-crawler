@@ -10,7 +10,7 @@
 
 #include "utility.h"
 
-void initialise_room_file(FILE* room_file) {
+static void initialise_room_file(FILE* room_file) {
 	const char* initial_configuration =
 	"[ROOMS]\n"
 	"\n"
@@ -49,7 +49,7 @@ void initialise_room_file(FILE* room_file) {
 	rewind(room_file);
 }
 
-void error_out(struct file* info) {
+static void error_out(struct file* info) {
 	if (info->line_character_counter > MAX_FILE_LINE_LENGTH) {
 		printf("Error: line %zu of rooms.txt is too long (max %d characters, currently %zu).\n", 
 		       info->line_counter, MAX_FILE_LINE_LENGTH, info->line_character_counter);
@@ -67,7 +67,7 @@ void error_out(struct file* info) {
 	}
 }
 
-void extract_room_number(struct file* info) {
+static void extract_room_number(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -85,7 +85,7 @@ void extract_room_number(struct file* info) {
 	}
 }
 
-void extract_room_message(struct file* info) {
+static void extract_room_message(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -103,7 +103,7 @@ void extract_room_message(struct file* info) {
 	strcpy(game.rooms[info->room_counter].message, info->line);
 }
 
-void connecting_room_check(struct file* info) {
+static void connecting_room_check(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -120,7 +120,7 @@ void connecting_room_check(struct file* info) {
 	info->is_connecting_rooms = true;
 }
 
-void add_room_connection(struct connection* connection, struct file* info, enum direction direction) {
+static void add_room_connection(struct connection* connection, struct file* info, enum direction direction) {
 	if (strncmp(info->line, connection->text, connection->size) != 0) {
 		return;
 	}
@@ -129,7 +129,7 @@ void add_room_connection(struct connection* connection, struct file* info, enum 
 	game.rooms[info->room_counter].connections[direction] = string_to_size_t(info->line);
 }
 
-void extract_room_connections(struct file* info) {
+static void extract_room_connections(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -166,7 +166,7 @@ void extract_room_connections(struct file* info) {
 	}
 }
 
-void add_room_challenges(struct file* info) {
+static void add_room_challenges(struct file* info) {
 	char* line = info->line;
 	size_t room_index = info->room_counter;
 	if (strncmp(line, "None", 4) == 0) {
@@ -186,7 +186,7 @@ void add_room_challenges(struct file* info) {
 	}
 }
 
-void extract_room_challenges(struct file* info) {
+static void extract_room_challenges(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -218,7 +218,7 @@ void extract_room_challenges(struct file* info) {
 	info->room_counter++;
 }
 
-void introductory_text_check(struct file* info) {
+static void introductory_text_check(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -235,7 +235,7 @@ void introductory_text_check(struct file* info) {
 	info->is_reading_introductory_text = true;
 }
 
-void extract_introductory_text(struct file* info) {
+static void extract_introductory_text(struct file* info) {
 	if (info->errored) {
 		return;
 	}
@@ -250,7 +250,7 @@ void extract_introductory_text(struct file* info) {
 	}
 }
 
-void update_line(struct file* info) {
+static void update_line(struct file* info) {
 	if (info->current != '\n') {
 		return;
 	}
@@ -264,7 +264,7 @@ void update_line(struct file* info) {
 	memset(info->line, 0, MAX_FILE_LINE_LENGTH);
 }
 
-void extract(FILE* room_file) {
+static void extract(FILE* room_file) {
 	struct file info = {0};
 	info.line_counter = 1;
 
