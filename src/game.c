@@ -12,7 +12,7 @@
 
 #include "utility.h"
 
-void help_text(void) {
+void print_help_text(void) {
 	const char* help_text =
 	"Type compass directions to move.\n"
 	"Type 'attack' to attack.\n"
@@ -159,7 +159,7 @@ void game_logic(void) {
 	bool moved = false;
 	if (strncmp(game.response, "help", 4) == 0) {
 		printf("\n");
-		help_text();
+		print_help_text();
 		return;
 	} else if (strncmp(game.response, "north", 5) == 0) {
 		moved = true;
@@ -174,6 +174,7 @@ void game_logic(void) {
 		moved = true;
 		next_room = game.player.room.connections[WEST];
 	}
+	
 	if (moved) {
 		move_logic(next_room);
 	}

@@ -42,7 +42,7 @@ void print_debug_info(void) {
 
 int main(void) {
 	load();
-	help_text();
+	print_help_text();
 	printf("Type 'help' at any time to bring up these instructions.\n\n");
 
 	while (game.response[0] == '\0') {
